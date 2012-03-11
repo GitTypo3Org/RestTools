@@ -1,0 +1,67 @@
+Commandline tests
+=================
+
+Invocation of Python scripts
+----------------------------
+
+Depending on your installation you can either write::
+
+    $:  tweak_oohtml
+
+or you have to write::
+
+    $:  python  tweak_oohtml.py
+
+
+OpenOffice to HTML
+------------------
+   
+Examples::
+
+    $: soffice.exe --headless -convert-to html manual.odt
+    $: "D:\InstalledPrograms\LibreOffice 3.4\program\soffice.exe" --headless -convert-to html example.odt
+
+
+Preprocessing
+-------------
+
+Examples::
+
+    $:  tweak_oohtml
+    $:  tweak_oohtml -h
+    $:  tweak_oohtml --help
+    $:  tweak_oohtml --version
+    $:  tweak_oohtml --license
+    $:  tweak_oohtml --history
+    $:  tweak_oohtml     example.html  example-tweaked.html
+    $:  tweak_oohtml -v  example.html  example-tweaked.html
+
+    $:  mkdir img
+    $:  move *.png img
+    $:  move *.gif img
+    $:  move *.jpg img
+
+
+Preprocessed HTML to reST
+-------------------------
+
+Examples::
+
+        $:  ooxhtml2rst 
+        $:  ooxhtml2rst  -h
+        $:  ooxhtml2rst  --help
+        $:  ooxhtml2rst  --version
+        $:  ooxhtml2rst  --license
+        $:  ooxhtml2rst  --history
+    (1) $:  ooxhtml2rst  example-tweaked.html  example.rst
+        $:  ooxhtml2rst  example-tweaked.html  example.rst  -a1
+        $:  ooxhtml2rst  example-tweaked.html  example.rst  --append-log=1
+        $:  ooxhtml2rst  example-tweaked.html  example.rst  --taginfo=1
+        $:  ooxhtml2rst  example-tweaked.html  example.rst  --logfile=logfile.txt
+        $:  ooxhtml2rst  example-tweaked.html  example.rst  --treefile=treefile.txt
+    (2) $:  ooxhtml2rst  example-tweaked.html  example.rst  -a1 --taginfo=1 --logfile=logfile.txt --treefile=treefile.txt
+    
+| (1) is what you want if you are mainly interested in the result.
+| (2) is what you want if you additionally to (1) want to know what the Parser does.    
+
+The End.
