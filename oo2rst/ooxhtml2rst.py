@@ -5,7 +5,7 @@
 Convert an OpenOffice (X)HTML file to reST.
 """
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 # leave your name and notes here:
 __history__ = """\
@@ -15,6 +15,9 @@ __history__ = """\
             added: feature abc
 2012-03-10  added: argparse detector
 2012-03-11  v1.0.1 ready for git.typo3.org/Documentation/RestTools/oo2rst
+2012-03-14  v1.0.2 remove trailing blanks; Bugfix: font_log;
+            feature: unique column names; Bugfix: log_comments if taginfo;
+            add to: META-MAPPING;
 
 """
 
@@ -73,10 +76,12 @@ META_MAPPING = {
     'changedby'      : ('Changed by'    , 1),
     'changed'        : ('Changed'       , 1),
     'classification' : ('Classification', 1),
+    'content-style-type' : ('Content-style-type', 0),
     'keywords'       : ('Keywords'      , 1),
     'author'         : ('Author'        , 1),
     'email'          : ('Email'         , 1),
     'language (en, de, fr, nl, dk, es, ... )' : ('Language'  , 1),
+    'resourceloaderdynamicstyles' : ('Resource_Loader_Dynamic_Styles', 0),
     'sdfootnote'     : ('sdfootnote'    , 0),
     'sdendnote'      : ('sdendnote'     , 0),
 }
@@ -107,14 +112,14 @@ def myprint(*args, **kwds):
 
 
 ##  From the Docutils docs:
-        
-##  Below is a simplified diagram of the hierarchy of elements in the 
-##  Docutils document tree structure. An element may contain any other 
-##  elements immediately below it in the diagram. Notes are written in 
-##  square brackets. Element types in parentheses indicate recursive or 
-##  one-to-many relationships; sections may contain (sub)sections, tables 
-##  contain further body elements, etc. 
-##  
+
+##  Below is a simplified diagram of the hierarchy of elements in the
+##  Docutils document tree structure. An element may contain any other
+##  elements immediately below it in the diagram. Notes are written in
+##  square brackets. Element types in parentheses indicate recursive or
+##  one-to-many relationships; sections may contain (sub)sections, tables
+##  contain further body elements, etc.
+##
 ##  +--------------------------------------------------------------------+
 ##  | document  [may begin with a title, subtitle, decoration, docinfo]  |
 ##  |                             +--------------------------------------+
@@ -130,22 +135,22 @@ def myprint(*args, **kwds):
 ##  | (inline +-----------+------------------+--------------+
 ##  | markup) |
 ##  +---------+
-##  
-##  The Docutils document model uses a simple, recursive model for section 
-##  structure. A document node may contain body elements and section 
-##  elements. Sections in turn may contain body elements and sections. The 
-##  level (depth) of a section element is determined from its physical 
-##  nesting level; unlike other document models (<h1> in HTML, <sect1> in 
-##  DocBook, <div1> in XMLSpec) the level is not incorporated into the 
-##  element name. 
-##  
-##  The Docutils document model uses strict element content models. Every 
-##  element has a unique structure and semantics, but elements may be 
-##  classified into general categories (below). Only elements which are 
-##  meant to directly contain text data have a mixed content model, where 
-##  text data and inline elements may be intermixed. This is unlike the much 
-##  looser HTML document model, where paragraphs and text data may occur at 
-##  the same level. 
+##
+##  The Docutils document model uses a simple, recursive model for section
+##  structure. A document node may contain body elements and section
+##  elements. Sections in turn may contain body elements and sections. The
+##  level (depth) of a section element is determined from its physical
+##  nesting level; unlike other document models (<h1> in HTML, <sect1> in
+##  DocBook, <div1> in XMLSpec) the level is not incorporated into the
+##  element name.
+##
+##  The Docutils document model uses strict element content models. Every
+##  element has a unique structure and semantics, but elements may be
+##  classified into general categories (below). Only elements which are
+##  meant to directly contain text data have a mixed content model, where
+##  text data and inline elements may be intermixed. This is unlike the much
+##  looser HTML document model, where paragraphs and text data may occur at
+##  the same level.
 
 
 
@@ -168,7 +173,7 @@ class OOHelperFunctions(object):
             tim = '%s:%s:%s (%s)' % (tim[0:2], tim[2:4], tim[4:6], tim[6:], )
             result = day + ' ' + tim
         return result
-        
+
 
 
 class TableDescriptor(object):
@@ -215,6 +220,13 @@ class TableDescriptor(object):
             u = uc
             while not self.isNewColName(u):
                 u = u + uc
+        cnt = 1
+        u2 = u
+        while not self.isNewColName(u2):
+            cnt += 1
+            u2 = '%s-%s' % (u, cnt)
+        if cnt > 1:
+            u = u2
         return u
 
     def getColName(self, s=''):
@@ -240,7 +252,7 @@ class DataCollector(object):
 
         # states
         self.verbatim = [False]
-        
+
         # intermediate storage
         self.fontstack = []
         self.listsymbolstack = []
@@ -249,10 +261,10 @@ class DataCollector(object):
         self.tablestack = []
         self.collected_images = {}
         self.collected_metas = []
-            
+
     def push(self):
         self.stack.append((self.current_datahandler, self.sbuf))
-        
+
     def pop(self):
         self.current_datahandler, self.sbuf = self.stack.pop()
 
@@ -530,7 +542,7 @@ class DataCollector(object):
 
         Some characters are being escape and multiple whitespace
         characters are replaced by a single blank.
-        
+
         """
         data = data.replace('\t',' ')
         data = data.replace('_','\\_')
@@ -545,7 +557,7 @@ class DataCollector(object):
             lines.append('')
         data = u' '.join(lines)
         return data
-        
+
     def datahandler_paragraph(self, data, verbatim=None, src=None):
         if not verbatim:
             data = self.normdata_paragraph(data)
@@ -997,7 +1009,7 @@ class DataCollector(object):
         self.verbatim.pop()
         data = self.sbuf.getvalue()
         self.pop()
-        if self.taginfo: 
+        if self.taginfo:
             self.sbuf.write('\n\n.. taginfo():  <%s> %r\n\n' % (tag, attrs))
 
         if tag in ['pre']:
@@ -1394,7 +1406,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
 
         else:
             self.log_unhandled_tags(tag, attrs)
-   
+
 
     def handle_data(self, data):
         if self.tagwriter:
@@ -1414,7 +1426,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
                     else:
                         tags.append('%s-0' % k)
                     i += 1
-                        
+
                 tags = '>'.join(tags)
                 self.unexpected_data.append((s, (self.lineno, self.offset), tags))
 
@@ -1441,8 +1453,9 @@ class MyHTMLParser(HTMLParser.HTMLParser):
     def handle_comment(self, data):
         if self.tagwriter:
             self.tagprinter('  ' * self.taglevel, data, NL)
-        firstline = '.. <!-- comment -->'
-        self.datacollector.collect_literal_block(firstline, data)
+        if self.taginfo:
+            firstline = '.. <!-- comment -->'
+            self.datacollector.collect_literal_block(firstline, data)
 
     def handle_decl(self, decl):
         if self.tagwriter:
@@ -1462,7 +1475,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         stats[0] += 1
         stats[1].append(self.lineno)
 
-    def log_handled_tags(self, tag, attrs=[]):            
+    def log_handled_tags(self, tag, attrs=[]):
         stats = self.handled_tags_log.get(tag, None)
         if stats is None:
             stats = self.handled_tags_log[tag] = [0, []]
@@ -1561,7 +1574,7 @@ def main(f1name, f2name, f3name=None, f4name=None, appendlog=0, taginfo=0):
 
     # outfile
     f2 = codecs.open(f2name, 'w', 'utf-8-sig')
-    
+
     # treefile
     f3 = None
     if f3name:
@@ -1587,7 +1600,7 @@ def main(f1name, f2name, f3name=None, f4name=None, appendlog=0, taginfo=0):
         if 1:
             blocktitle = 'Attributes of <font>::'
             if not P.font_log:
-                P.font_log.append('None')
+                P.font_log['None'] = 'None'
             s = StringIO()
             pprint(P.font_log, s, indent=1, width=69)
             s = s.getvalue()
@@ -1715,7 +1728,7 @@ class Namespace(object):
 
 
 if __name__=="__main__":
-    
+
     try:
         import argparse
         argparse_available = True
