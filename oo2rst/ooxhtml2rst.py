@@ -5,7 +5,7 @@
 Convert an OpenOffice (X)HTML file to reST.
 """
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 # leave your name and notes here:
 __history__ = """\
@@ -18,7 +18,9 @@ __history__ = """\
 2012-03-14  v1.0.2 remove trailing blanks; Bugfix: font_log;
             feature: unique column names; Bugfix: log_comments if taginfo;
             add to: META-MAPPING;
-
+2012-03-15  v1.0.3 Bugfix: superscript etc.; Feature: support for
+            textrole underline; Feature: snippets;
+2012-03-18  used as is for complete conversion process today            
 """
 
 __copyright__ = """\
@@ -88,6 +90,31 @@ META_MAPPING = {
 
 NL = '\n'
 CRLF = '\r\n'
+
+CUTTER_MARK_IMAGES = '.. ######CUTTER_MARK_IMAGES######'
+
+class Dummy(object):
+    pass
+
+SNIPPETS = Dummy()
+SNIPPETS.for_your_information = """\
+.. ==================================================
+.. FOR YOUR INFORMATION
+.. --------------------------------------------------
+.. -*- coding: utf-8 -*- with BOM.
+
+"""
+SNIPPETS.define_some_textroles = """\
+.. ==================================================
+.. DEFINE SOME TEXTROLES
+.. --------------------------------------------------
+.. role::   underline
+.. role::   typoscript(code)
+.. role::   ts(typoscript)
+   :class:  typoscript
+.. role::   php(code)
+
+"""
 
 class Dummy(object):
     pass
@@ -252,6 +279,8 @@ class DataCollector(object):
 
         # states
         self.verbatim = [False]
+        self.is_used_textrole_underline = False
+        self.last_src = None
 
         # intermediate storage
         self.fontstack = []
@@ -273,9 +302,11 @@ class DataCollector(object):
             print i, h, b
 
     def collect(self, data, verbatim=None, src=None):
+        # think of: self.datacollector.collect(u, src='entityref')
         if verbatim is None:
             verbatim = self.verbatim[-1]
         self.current_datahandler(data, verbatim, src)
+        self.last_src = src
 
     def debuginfo(self, what):
         result = """DataCollector.debuginfo(): don't know how to '%s'""" % what
@@ -353,6 +384,8 @@ class DataCollector(object):
 
         if self.collected_images:
             self.collect('\n\n', 'verbatim')
+            self.collect('%s\n\n' % CUTTER_MARK_IMAGES, 'verbatim')
+
             if 0:
                 print repr(self.collected_images)
 
@@ -535,24 +568,32 @@ class DataCollector(object):
             if self.fontstack:
                 if self.taginfo:
                     self.collect('.. %r\n\n' % self.fontstack)
+            if not self.verbatim[-1] and s[0:2] in ['- ', '+ ', '* ', '# ']:
+                s = '\\' + s
+            if 'tryTextWrapper':
+                s = NL.join(TextWrapper(initial_indent='', subsequent_indent='').wrap(s))
+
             self.collect(u'%s\n\n' % s, verbatim=True, src='paragraph')
 
-    def normdata_paragraph(self, data):
+    def normdata_paragraph(self, data, src=None):
         """ Normalize incoming data for use in paragraphs.
 
         Some characters are being escape and multiple whitespace
         characters are replaced by a single blank.
 
         """
-        data = data.replace('\t',' ')
-        data = data.replace('_','\\_')
-        data = data.replace('*','\\*')
-        data = data.replace('|','\\|')
-        data = data.replace('`','\\`')
-        data = data.replace('\r\n',' ')
-        data = data.replace('\n',' ')
-        data = data.replace('\r',' ')
+        data = data.replace('\t', ' ')
+        data = data.replace('_', '\\_')
+        data = data.replace('*', '\\*')
+        data = data.replace('|', '\\|')
+        data = data.replace('`', '\\`')
+        data = data.replace('\r\n', ' ')
+        data = data.replace('\n', ' ')
+        data = data.replace('\r', ' ')
         lines = data.split()
+        if ((self.last_src == 'entityref' or
+             self.last_src == 'charref') and data.startswith(' ')):
+            lines.insert(0, '')
         if data.endswith(' '):
             lines.append('')
         data = u' '.join(lines)
@@ -560,7 +601,7 @@ class DataCollector(object):
 
     def datahandler_paragraph(self, data, verbatim=None, src=None):
         if not verbatim:
-            data = self.normdata_paragraph(data)
+            data = self.normdata_paragraph(data, src)
         if data:
             if self.sbuf.tell() and not self.sbuf.getvalue()[-1] in WHITESPACECHARS:
                 pass
@@ -582,10 +623,12 @@ class DataCollector(object):
         listsymbol = self.listsymbolstack[-1]
         indentstr = ' ' * (len(listsymbol)+1)
         s = s.strip()
-        s = NL.join(['%s%s' % (indentstr, line) for line in s.splitlines()])
+        s = ['%s%s' % (indentstr, line) for line in s.splitlines()]
+        s = NL.join(s)
         s = listsymbol + s[len(listsymbol):]
         if s:
             self.collect(u'%s\n\n' % s, verbatim=True)
+
 
     def datahandler_li(self, data, verbatim=None, src=None):
         self.datahandler_paragraph(data, verbatim)
@@ -906,6 +949,52 @@ class DataCollector(object):
         if tag == 'font':
             self.fontstack.append(attrs)
 
+
+
+    # reStructuredText Interpreted Text Roles
+    # http://docutils.sourceforge.net/docs/ref/rst/roles.html
+    # http://srv123.typo3.org/~mbless/DOCROOT_HTDOCS/World/Docutils/html/docutils-docs/peps/ref/rst/roles.html
+
+    # :emphasis:
+    # reStructuredText Interpreted Text Roles
+    # http://docutils.sourceforge.net/docs/ref/rst/roles.html
+    # http://srv123.typo3.org/~mbless/DOCROOT_HTDOCS/World/Docutils/html/docutils-docs/peps/ref/rst/roles.html
+
+    # docutils default text roles
+
+    # ====================== ========================= ================= =================
+    # from html              role                      inline markup     to html
+    # ====================== ========================= ================= =================
+    # <i>text</i>            :emphasis:`text`          *text*            <i>text</i>
+    #                        :literal:`text`
+
+    #                        :code:`text`
+    # <tt>text</tt>          .. literal                ``text``          <tt>text</tt>
+
+    #                        :math:`text`
+
+    #                        :pep-reference:`text`
+    #                        :pep:`text`
+
+    #                        :rfc-reference:`text`
+    #                        :rfc:`text`
+
+    # <strong>text</strong>  :strong:`text`            **text**          <b>text</b>
+    # <b>text</b>            :strong:`text`            **text**          <b>text</b>
+
+    # <sub>text</sub>        :subscript:`text`                           <sub>text</sub>
+    # <sub>text</sub>        :sub:`text`                                 <sub>text</sub>
+
+    # <sup>text</sup>        :superscript:`text`                         <sup>text</sup>
+    # <sup>text</sup>        :sup:`text`                                 <sup>text</sup>
+
+    # <cite>text</cite>      :title-reference:`text`                     <cite>text</cite>
+    # <cite>text</cite>      :title:`text`                               <cite>text</cite>
+    # <cite>text</cite>      :t:`text`                                   <cite>text</cite>
+
+    # ====================== ========================= ================= =================
+
+
     def stop_inlinemarkup(self, tag, attrs=[]):
         s = self.sbuf.getvalue()
         self.pop()
@@ -937,7 +1026,11 @@ class DataCollector(object):
                         s = s.strip()
                         self.collect(u'%s[!%s] %s [/%s] ' % (spacer, tag, s, tag), 'verbatim')
                     else:
-                        self.collect(u'%s' % s, 'verbatim')
+                        s = s.strip()
+                        if s:
+                            self.collect(u'%s:underline:`%s` ' % (spacer, s), 'verbatim')
+                            self.is_used_textrole_underline = True
+
         elif tag in ['tt']:
             if tag:
                 if self.verbatim[-1]:
@@ -953,7 +1046,7 @@ class DataCollector(object):
                 else:
                     s = s.strip()
                     if s:
-                        self.collect(u'%s:superscript:``%s`` ' % (spacer, s), 'verbatim')
+                        self.collect(u'%s:sup:`%s` ' % (spacer, s), 'verbatim')
         elif tag in ['code']:
             if s:
                 if self.verbatim[-1]:
@@ -961,7 +1054,7 @@ class DataCollector(object):
                 else:
                     s = s.strip()
                     if s:
-                        self.collect(u'%s:code:``%s`` ' % (spacer, s), 'verbatim')
+                        self.collect(u'%s:code:`%s` ' % (spacer, s), 'verbatim')
         elif tag in ['sub']:
             if s:
                 if self.verbatim[-1]:
@@ -969,7 +1062,15 @@ class DataCollector(object):
                 else:
                     s = s.strip()
                     if s:
-                        self.collect(u'%s:subscript:``%s`` ' % (spacer, s), 'verbatim')
+                        self.collect(u'%s:sub:`%s` ' % (spacer, s), 'verbatim')
+        elif tag in ['cite']:
+            if s:
+                if self.verbatim[-1]:
+                    self.collect(s, 'verbatim', tag)
+                else:
+                    s = s.strip()
+                    if s:
+                        self.collect(u'%s:title:`%s` ' % (spacer, s), 'verbatim')
         elif tag == 'font':
             self.fontstack.pop()
             if s:
@@ -1141,6 +1242,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         # self.close_still_open_pre_tag_if_necassary(tag, attrs)
         self.taglevel += 1
         self.tagstack.append((tag,attrs))
+        self.datacollector.last_src = None
 
         if self.tagwriter:
             self.tagprinter('  ' * self.taglevel, tag)
@@ -1156,7 +1258,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
             self.do_we_expect_data.append(True)
             self.log_handled_tags(tag, attrs)
 
-        elif tag in ['b', 'i', 'u', 'span', 'strong', 'font', 'tt', 'code', 'sup', 'sub']:
+        elif tag in ['b', 'i', 'u', 'span', 'strong', 'font', 'tt', 'code', 'sup', 'sub', 'cite']:
             if tag == 'font':
                 self.log_font(tag, attrs)
             self.datacollector.start_inlinemarkup(tag, attrs)
@@ -1270,6 +1372,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
 
 
     def handle_endtag(self, tag):
+        self.datacollector.last_src = None
         # self.close_still_open_pre_tag_if_necassary(tag, [])
         if self.tagwriter:
             if (0):
@@ -1278,7 +1381,12 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         self.taglevel -= 1
         tag0, attrs = self.tagstack.pop()
         if not tag0 == tag:
-            print 'Error: unbalanced tags. ', tag, 'shall be closed, but ', tag0, 'found in stack.'
+            print
+            print 'ERROR at line %s, column %s: unbalanced tags in \'%s\'' % (self.lineno, self.offset, args.infile)
+            print '      %s%s  shall be closed but' % (tag,  ' '*(10-len(tag)))
+            print '      %s%s  found in stack.'     % (tag0, ' '*(10-len(tag0)))
+            print '      %r' % ([t[0] for t in self.tagstack] + [tag0])
+            print
             sys.exit(1)
             # raise "error"
 
@@ -1291,7 +1399,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         if tag in ['p']:
             self.datacollector.stop_paragraph(tag, attrs)
             self.do_we_expect_data.pop()
-        elif tag in ['b', 'i', 'u', 'span', 'strong', 'font', 'tt', 'code', 'sup', 'sub']:
+        elif tag in ['b', 'i', 'u', 'span', 'strong', 'font', 'tt', 'code', 'sup', 'sub', 'cite']:
             self.datacollector.stop_inlinemarkup(tag, attrs)
             self.do_we_expect_data.pop()
 
@@ -1372,8 +1480,8 @@ class MyHTMLParser(HTMLParser.HTMLParser):
 
 
     def handle_startendtag(self, tag, attrs):
+        self.datacollector.last_src = None
         # self.close_still_open_pre_tag_if_necassary(tag, attrs)
-
         if self.tagwriter:
             self.tagprinter('  ' * self.taglevel, tag)
             if attrs:
@@ -1381,7 +1489,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
             self.tagprinter(NL)
 
         if tag in ['br']:
-            self.datacollector.collect(NL)
+            self.datacollector.collect(NL, src='startendtag')
             self.log_handled_tags(tag, attrs)
 
         elif tag in ['img']:
@@ -1410,10 +1518,10 @@ class MyHTMLParser(HTMLParser.HTMLParser):
 
     def handle_data(self, data):
         if self.tagwriter:
-            self.tagprinter('  ' * self.taglevel, '%r'%data[:50], NL)
+            self.tagprinter('  ' * self.taglevel, '%r' % data[:50], NL)
 
         if 1 or self.do_we_expect_data[-1]:
-            self.datacollector.collect(data)
+            self.datacollector.collect(data, src='data')
 
         if not self.do_we_expect_data[-1]:
             s = data.strip()
@@ -1451,6 +1559,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         self.datacollector.collect(u, src='entityref')
 
     def handle_comment(self, data):
+        self.datacollector.last_src = None
         if self.tagwriter:
             self.tagprinter('  ' * self.taglevel, data, NL)
         if self.taginfo:
@@ -1458,14 +1567,17 @@ class MyHTMLParser(HTMLParser.HTMLParser):
             self.datacollector.collect_literal_block(firstline, data)
 
     def handle_decl(self, decl):
+        self.datacollector.last_src = None
         if self.tagwriter:
             self.tagprinter('  ' * self.taglevel, decl, NL)
 
     def handle_pi(self, data):
+        self.datacollector.last_src = None
         if self.tagwriter:
             self.tagprinter('  ' * self.taglevel, data, NL)
 
     def unknown_decl(self, data):
+        self.datacollector.last_src = None
         self.error("unknown declaration: %r" % (data,))
 
     def log_unhandled_tags(self, tag, attrs=[]):
@@ -1483,10 +1595,11 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         stats[1].append(self.lineno)
 
     def log_font(self, tag, attrs=[]):
+        stats = None
         for attr in attrs:
             stats = self.font_log.get(attr, None)
         if stats is None:
-            stats = self.font_log[attr] = [0, []]
+            stats = self.font_log[''] = [0, []]
         stats[0] += 1
         if 0and 'lets not collect linenumbers here':
             stats[1].append(self.lineno)
@@ -1677,18 +1790,25 @@ def main(f1name, f2name, f3name=None, f4name=None, appendlog=0, taginfo=0):
                        'this document off.**\n')
                 P.datacollector.collect(msg, 'verbatim')
 
-
         result = P.datacollector.stop_document('initial')
+        if 1:
+            f2.write(SNIPPETS.for_your_information)
+        if 1:
+            f2.write(SNIPPETS.define_some_textroles)
+        else:
+            if P.datacollector.is_used_textrole_underline:
+                f2.write('.. role:: underline\n\n')
+
         f2.write(result)
 
     finally:
+        P.close()
         f2.close()
         f1.close()
         if f3:
             f3.close()
         if f4:
             f4.close()
-        P.close()
 
 
 def get_argparse_args():

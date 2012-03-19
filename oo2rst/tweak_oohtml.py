@@ -12,7 +12,7 @@ inserted as first line if not already present.
 
 """
 
-__version__ = '1.0.1'
+__version__ = '1.0.3'
 
 
 # leave your name and notes here:
@@ -24,6 +24,9 @@ __history__ = """\
             added: feature ABC
 2012-03-11  added: argparse detector
 2012-03-11  v1.0.1 ready for git.typo3.org/Documentation/RestTools/oo2rst/
+2012-03-16  v1.0.2 Lots of changes! The code is quite a hack in the
+            moment - but it works sufficiently.
+2012-03-18  used as is for complete conversion process today
 
 """
 
@@ -62,12 +65,13 @@ HTML4TAGS_WITH_FORBIDDEN_ENDTAGS = [
     'area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
     'img', 'input', 'isindex', 'link', 'meta','param']
 
-HTML4TAGS_WITH_OPTIONAL_ENDTAGS = [ 
+HTML4TAGS_WITH_OPTIONAL_ENDTAGS = [
     'body', 'colgroup', 'dd', 'dt', 'head', 'html', 'li', 'option',
     'p', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr']
 
-TAGS_TO_REMOVE_IF_CLOSED_BUT_NOT_OPEN = ['span']
+ALWAYS_CLOSE_ON_NEXT_TAG = ['style', 'script', 'title']
 
+TAGS_TO_BE_SUPPLEMENTED = ['span', 'b', 'i', 'font', 'sdfield']
 
 class MyHTMLParser(HTMLParser.HTMLParser):
 
@@ -79,32 +83,57 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         self.opentagscounter = {}
         if self.talk:
             sys.stdout.write('\n')
+        self.tagstack = []
 
     def handle_startendtag(self, tag, attrs):
         self.w.write(self.get_starttag_text())
 
+    def closeThisTag(self, tag):
+        while self.tagstack and self.tagstack[-1] != tag:
+            tag0 = self.tagstack.pop()
+            self.w.write('</%s>' % tag0)
+            if self.talk:
+                sys.stdout.write(' INSERTED: </%s> ' % tag0)
+        if self.tagstack and self.tagstack[-1] == tag:
+            tag0 = self.tagstack.pop()
+            self.w.write('</%s>' % tag0)
+        else:
+            if self.talk:
+                sys.stdout.write('\nOOPS: Iwas told to close tag \'%s\''
+                                 '- but that wasn\'t in stack.\n' % tag)
+
     def handle_starttag(self, tag, attrs):
         log = 0
-        if tag in TAGS_TO_REMOVE_IF_CLOSED_BUT_NOT_OPEN:
-            self.opentagscounter[tag] = self.opentagscounter.get(tag, 0) + 1
         s = self.get_starttag_text()
-        if (tag in HTML4TAGS_WITH_FORBIDDEN_ENDTAGS and
+
+        usestack = True
+        if self.tagstack and self.tagstack[-1] in ALWAYS_CLOSE_ON_NEXT_TAG:
+            tagtoclose = self.tagstack[-1]
+            self.closeThisTag(tagtoclose)
+            if self.talk and log:
+                sys.stdout.write('</%s> ' % tagtoclose)
+        elif (tag in HTML4TAGS_WITH_FORBIDDEN_ENDTAGS and
             s.endswith('>') and not s.endswith('/>')):
             s = s[:-1] + ' />'
+            usestack = False
         elif tag in ['li', 'dd', 'dt']:
             log = True
             if len(self.liststack[-1]) > 1:
                 tagtoclose = self.liststack[-1].pop()
-                self.w.write('</%s>' % tagtoclose)
+                self.closeThisTag(tagtoclose)
                 if self.talk and log:
                     sys.stdout.write('</%s> ' % tagtoclose)
             self.liststack[-1].append(tag)
         elif tag in ['ol', 'ul', 'dl']:
             self.liststack.append([tag])
             log = True
+
+        if usestack:
+            self.tagstack.append(tag)
         self.w.write(s)
         if self.talk and log:
             sys.stdout.write('<%s>' % tag)
+
 
     def handle_endtag(self, tag):
         log = 0
@@ -118,27 +147,24 @@ class MyHTMLParser(HTMLParser.HTMLParser):
             nl = '\n'
             if len(self.liststack[-1]) > 1:
                 tagtoclose = self.liststack[-1].pop()
-                self.w.write('</%s>' % tagtoclose)
+                self.closeThisTag(tagtoclose)
                 if self.talk and log:
                     sys.stdout.write('</%s> ' % tagtoclose)
             if len(self.liststack[-1]) > 1:
                 'this should not happen'
             self.liststack.pop()
 
-        omittag = 0
-        if tag in TAGS_TO_REMOVE_IF_CLOSED_BUT_NOT_OPEN:
-            if self.opentagscounter.get(tag, 0) < 1:
-                omittag = 1
-            else:
-                self.opentagscounter[tag] -= 1
+        if tag in TAGS_TO_BE_SUPPLEMENTED:
+            if not (self.tagstack and self.tagstack[-1] == tag):
+                self.w.write('<%s>' % tag)
+                self.tagstack.append(tag)
+                if self.talk:
+                    sys.stdout.write(' INSERTED: <%s> ' % tag)
 
-        if not omittag:
-            self.w.write('</%s>' % (tag,))
-            if self.talk and log:
-                sys.stdout.write('</%s>%s' % (tag, nl))
-        else:
-            if self.talk:
-                sys.stdout.write('OMITTED: </%s>\n' % (tag, ))
+        self.closeThisTag(tag)
+        if self.talk and log:
+            sys.stdout.write('</%s>%s' % (tag, nl))
+
 
     def handle_charref(self, name):
         self.w.write('&#%s;' % name)
@@ -255,7 +281,7 @@ class Namespace(object):
 
 
 if __name__=="__main__":
-    
+
     try:
         import argparse
         argparse_available = True
