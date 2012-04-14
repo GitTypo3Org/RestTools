@@ -29,14 +29,14 @@ possibly image files. Let's move the images to a subfolder ``./img/``.
 
 Windows commandline::
 
-  soffice.exe  --headless  -convert-to html  example.ott
+  soffice.exe  --headless  -convert-to html  example.sxw
   md img
   mv *.png img
   mv *.gif img
   
 MacOs commandline::
   alias soffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
-  soffice  --headless  -convert-to html  example.odt
+  soffice  --headless  -convert-to html  example.sxw
   mkdir img
   mv *.{png,gif} img/
 
