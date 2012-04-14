@@ -22,7 +22,7 @@ Step 1: Save the OpenOffice document as HTML
 --------------------------------------------
 
 In step 1 we are reading (1) and writing (2). We are using 
-`LibreOffice 3.4 <http://de.libreoffice.org/>`_ for this 
+`LibreOffice 3.4 <http://www.libreoffice.org/>`_ for this 
 step. Just open the document and "Save as HTML". This can be done at the
 commandline as well. As result you should have ``example.html`` and
 possibly image files. Let's move the images to a subfolder ``./img/``.
