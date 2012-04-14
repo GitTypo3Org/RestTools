@@ -34,6 +34,12 @@ Windows commandline::
   mv *.png img
   mv *.gif img
   
+MacOs commandline::
+  alias soffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
+  soffice  --headless  -convert-to html  example.odt
+  mkdir img
+  mv *.{png,gif} img/
+
   
 Step 2: Preprocessing
 ---------------------
