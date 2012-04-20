@@ -7,7 +7,13 @@
   TYPO3 Manual]
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \LoadClass[a4paper,11pt,twoside]{article}
-\RequirePackage{graphicx,geometry,tabularx,multicol,colortbl}
+% For graphicx, check if we are compiling under latex or pdflatex.
+\ifx\pdftexversion\undefined
+  \RequirePackage{graphicx}
+\else
+  \RequirePackage[pdftex]{graphicx}
+\fi
+\RequirePackage{geometry,tabularx,multicol,colortbl}
 \RequirePackage[english]{babel}
 \RequirePackage{fancyhdr}
 

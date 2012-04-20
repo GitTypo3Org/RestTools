@@ -4,7 +4,7 @@ SOURCES         += manual.tex
 RSTLATEX         = rst2latex.py
 PDFLATEX         = pdflatex
 
-RSTLATEX_OPTIONS = --no-section-numbering --stylesheet=lmodern --documentclass=typo3manual
+RSTLATEX_OPTIONS = --no-section-numbering --stylesheet=lmodern --documentclass=sphinxtypo3manual
 PDFLATEX_OPTIONS = -interaction=nonstopmode
 
 BASENAME         = manual
