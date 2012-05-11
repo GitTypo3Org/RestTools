@@ -16,6 +16,9 @@
 \RequirePackage{geometry,tabularx,multicol,colortbl}
 \RequirePackage[english]{babel}
 \RequirePackage{fancyhdr}
+\RequirePackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{00A0}{\nobreakspace}
+\RequirePackage[T1]{fontenc}
 
 \ProcessOptions
 
