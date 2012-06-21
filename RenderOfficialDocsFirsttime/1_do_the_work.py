@@ -1,5 +1,5 @@
 # 1_do_the_work.py
-# mb, 2012-05-20, 2012-06-01
+# mb, 2012-05-20, 2012-06-21
 
 # status: works well, but code is still pretty messy ...
 
@@ -18,35 +18,26 @@ be made like this::
 
 Expected input is:
 
-  Example.git
-  |-- Documentation/
-      |-- _not_versioned/
-          |-- _genesis/
-              |-- manual.sxw
-
-
-Output will be like this:
-
-  Example.git
+  Example.git/
   |-- .gitignore
   |-- Documentation/
-      |-- source/
+      |-- Index.rst
+      |-- (Images.txt)
+      |-- Images/
+      |-- 01-subfolder/
           |-- Index.rst
           |-- (Images.txt)
-          |-- Images/
-          |-- 01-subfolder/
+          |-- 01-01-subfolder/
               |-- Index.rst
-              |-- (Images.txt)
-              |-- 01-01-subfolder/
-                  |-- Index.rst
-              |-- ...
           |-- ...
-      |-- conf.py
-      |-- make.bat
-      |-- make-html.bat
-      |-- Makefile
-      |-- build/
-          |-- .gitignore
+      |-- ...
+      |-- _make/
+          |-- conf.py
+          |-- make.bat
+          |-- make-html.bat
+          |-- Makefile
+          |-- build/
+              |-- .gitignore
       |-- _not_versioned/
           |-- .gitignore
           |-- _genesis/
@@ -58,26 +49,45 @@ Output will be like this:
 
 Note::
 
-  If source/ has ONLY ONE subfolder, the paths to the images in Images.txt
-  will be made on '../' too short on purpose. The reason for this is that
+  If ReST sources have ONLY ONE subfolder, the paths to the images in Images.txt
+  will be made one '../' too short deliberately. The reason for this is that
   in this case you'll be willing to move everything in 01-subfolder/ up
   one level. After moving the paths will be correct.
 
   And you will have to merge these two files manually::
 
-    source/Index.rst
-    source/01-subfolder/Index.rst
+    Documentation/Index.rst
+    Documentation/01-subfolder/Index.rst
 
   And, if present, you will have to merge these two files manually::
 
-    source/Images.txt
-    source/01-subfolder/Images.txt
+    Documentation/Images.txt
+    Documentation/01-subfolder/Images.txt
+
+
+2012-06-21
+  New: start a single conversion from the commandline as
+  python  1_do_the_work.py  [.../]Documentation/_not_versioned/_genesis/manual.sxw
+
+2012-06-21
+  Note:
+    This package works on Windows as well if you open the manual in OpenOffice
+    and save it manually as HTML to 
+      [.../]Documentation/_not_versioned/_genesis/manual.html
+
+    tidy.exe needs to be in you path.
  
 """ 
+
+history = """
+2012-06-21 Change folder structure
+"""
+
 
 import copyclean
 import subprocess
 import os
+import sys
 import ooxhtml2rst
 import normalize_empty_lines
 import slice_to_numbered_files
@@ -134,15 +144,16 @@ def main(sxwfile):
     if not left:
         return
     left, right = os.path.split(left)
-    finalsourcedir = ospj(left, 'source').replace('\\', '/')
-    finaldocumentationdir = os.path.split(finalsourcedir)[0].replace('\\', '/')
+    finalsourcedir = left.replace('\\', '/')
+    finaldocumentationdir = finalsourcedir
     repositoryname = os.path.split(os.path.split(finaldocumentationdir)[0])[1].replace('\\', '/')
-    finalbuilddir = ospj(left, 'build').replace('\\', '/')
+    finalbuilddir = ospj(left, '_make', 'build').replace('\\', '/')
     finalnotversioneddir = ospj(left, '_not_versioned').replace('\\', '/')
+    sxwfile = sxwfile.replace('\\', '/')
     destdir = '/'.join(sxwfile.split('/')[:-1]).replace('\\', '/')
 
     print
-    if 0 or printfilenames:
+    if 1 or printfilenames:
         print 'repositoryname      :', repositoryname
         print 'finalsourcedir      :', finalsourcedir
         print 'finalbuilddir       :', finalbuilddir
@@ -252,7 +263,9 @@ def main(sxwfile):
 
 
     # res files
-    destdir = ospj(finalsourcedir, '..')
+    destdir = ospj(finalsourcedir, '_make')
+    if not ospe(destdir):
+        os.makedirs(destdir)
     files = os.listdir(resdir)
     for afile in files:
         if afile in ['default_conf.py', 'default_make.bat', 'default_make-html.bat', 
@@ -296,12 +309,35 @@ def main(sxwfile):
 
     return
 
+usage = """
+Usage:
+  python  %s  <infile>
+
+  where infile is the absolute or relative path to manual.sxw. The path must end as
+  .../<any package name>/Documentation/_not_versioned/_genesis/manual.sxw
+  For more info see docstring in script
+  '%s'.
+
+""" % (sys.argv[0], sys.argv[0])
+
+
 if __name__=="__main__":
 
-    import list_of_sxw_manuals
-    for sxwfile in list_of_sxw_manuals.files:
-        if mockup_uno:
-            p = sxwfile.find('git.typo3.org/')
-            if p > -1:
-                sxwfile = 'D:/TYPO3-Documentation/t3doc-srv123-mbless/' + sxwfile[p:]
+    if 0 and 'set parameter while developing ...':
+        sys.argv[1:] = [r'D:\Repositories\svn.typo3.org\TYPO3v4\piwikintegration\Documentation\_not_versioned\_genesis\manual.sxw']
+
+    if len(sys.argv) == 2:
+        sxwfile = sys.argv[1]
         main(sxwfile)
+    else:
+        print usage
+        print __doc__
+
+    if 0: # to be removed soon!?
+        import list_of_sxw_manuals
+        for sxwfile in list_of_sxw_manuals.files:
+            if mockup_uno:
+                p = sxwfile.find('git.typo3.org/')
+                if p > -1:
+                    sxwfile = 'D:/TYPO3-Documentation/t3doc-srv123-mbless/' + sxwfile[p:]
+            main(sxwfile)
