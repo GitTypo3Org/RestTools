@@ -1,5 +1,5 @@
 # 1_do_the_work.py
-# mb, 2012-05-20, 2012-06-21
+# mb, 2012-05-20, 2012-06-29
 
 # status: works well, but code is still pretty messy ...
 
@@ -79,7 +79,9 @@ Note::
  
 """ 
 
-history = """
+history = \
+"""
+2012-06-29 find 'res' relative to 'scriptdir'
 2012-06-21 Change folder structure
 """
 
@@ -98,7 +100,8 @@ ospj = os.path.join
 ospe = os.path.exists
 osps = os.path.split
 
-resdir = 'res'
+scriptdir = os.path.dirname(sys.argv[0])
+resdir = ospj(scriptdir, 'res')
 mockup_uno = 'win' in os.sys.platform
 printfilenames = 0
 
