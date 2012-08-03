@@ -1,9 +1,9 @@
 %%
-%% This is file `typo3manual.cls'
+%% This is file `sphinxtypo3manual.cls'
 %%
-%% Copyright (c) October 2011 Xavier Perseguers <xavier@typo3.org>
+%% Copyright (c) 2011-2012 Xavier Perseguers <xavier@typo3.org>
 %%
-\ProvidesClass{typo3manual}[2011/10/14 v.0.1
+\ProvidesClass{sphinxtypo3manual}[2012/08/03 v.0.2
   TYPO3 Manual]
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \LoadClass[a4paper,11pt,twoside]{article}
@@ -70,10 +70,10 @@
 %% Automatically scale down graphics if too large
 \makeatletter
 \def\maxwidth{%
-  \ifdim\Gin@nat@width>\linewidth
+  \ifdim.5\Gin@nat@width>\linewidth
     \linewidth
   \else
-    \Gin@nat@width
+    .5\Gin@nat@width
   \fi
 }
 \makeatother
@@ -97,4 +97,4 @@
 
 \endinput
 %%
-%% End of file `typo3manual.cls'.
+%% End of file `sphinxtypo3manual.cls'.
