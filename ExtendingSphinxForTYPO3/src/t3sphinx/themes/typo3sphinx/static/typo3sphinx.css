@@ -1,4 +1,6 @@
-/* everything "hacked" by mb, 2011-10-04, 2011-10-15 */
+/* everything "hacked" by mb, 2011-10-04, 2012-07-27 */
+
+/* 2012-07-27 modified admonition colors */
 
 
 /*
@@ -408,13 +410,14 @@ div.important {
 	border: 1px solid #a34e33;
 	border: 1px solid #691900;
 	border: 1px solid #8c2100;
+	border: 1px solid #8c6154;
 }
 div.important p.admonition-title {
 	margin: 0;
 	padding: 0.1em 0 0.1em 0.5em;
 	font-weight: bold;
-	background-color: #8c2100;
-	border-bottom-color: 1px solid #8c2100;
+	background-color: #8c6154;
+	border-bottom-color: 1px solid #8c6154;
 	color: #ffffff;
 }
 
@@ -428,6 +431,7 @@ div.tip p.admonition-title {
 	background-color: #21b25a; /* TYPO3 logo green */
 }
 
+div.caution p.admonition-title,
 div.warning p.admonition-title {
 	background-color: #ff3d00;
 	border-bottom-color: #ff3d00;
@@ -435,6 +439,7 @@ div.warning p.admonition-title {
 }
 
 div.admonition ul, div.admonition ol,
+div.caution ul, div.caution ol,
 div.warning ul, div.warning ol {
 	margin: 0.1em 0.5em 0.5em 3em;
 	padding: 0;
