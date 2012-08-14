@@ -1,0 +1,12 @@
+# GlobalSettings.yml
+
+---
+conf.py:
+  intersphinx_mapping:
+    python:
+    - http://docs.python.org/3.2
+    - null
+    t3tsref:
+    - http://preview.docs.typo3.org/TYPO3/TyposcriptReference
+    - null
+...

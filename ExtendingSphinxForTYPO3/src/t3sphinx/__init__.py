@@ -14,8 +14,11 @@
 # (Otherwise getting the version out of it from setup.py is impossible.)
 
 import os
+import yamlsettings
 
-__version__  = '0.1'
+__version__  = '0.2.0'
 
 package_dir = os.path.abspath(os.path.dirname(__file__))
 themes_dir = os.path.join(package_dir, 'themes')
+pathToGlobalYamlSettings = os.path.join(package_dir, 'settings', 'GlobalSettings.yml')
+typo3_codeblock_for_conf_py = os.path.join(package_dir, 'resources', 'typo3_codeblock_for_conf.py')

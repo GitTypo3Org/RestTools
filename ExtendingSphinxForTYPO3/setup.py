@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# setup.py, mb, 2012-05-28, 2012-05-28
+# setup.py, mb, 2012-05-28, 2012-08-14
 
 from distutils.core import setup
 
@@ -21,10 +21,24 @@ if 1:
             result.append(ospj(path[topdirlen:], afile))
     t3sphinx_package_data = result
 
+    for path, dirs, files in os.walk(topdir + 'settings'):
+        dirs.sort()
+        files.sort()
+        for afile in files:
+            result.append(ospj(path[topdirlen:], afile))
+    t3sphinx_package_data.extend(result)
+
+    for path, dirs, files in os.walk(topdir + 'resources'):
+        dirs.sort()
+        files.sort()
+        for afile in files:
+            result.append(ospj(path[topdirlen:], afile))
+    t3sphinx_package_data.extend(result)
+
 if 1:
     setup(
         name = 't3sphinx',
-        version = '0.1',
+        version = '0.2.0',
         description = 'TYPO3 specific extensions for Sphinx',
         author = 'Martin Bless',
         author_email = 'martin@mbless.de',
