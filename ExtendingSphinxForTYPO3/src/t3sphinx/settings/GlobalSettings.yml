@@ -33,17 +33,13 @@ conf.py:
     - http://preview.docs.typo3.org/TYPO3/EditorsTutorial
     - null
 
-    t3extmanual:
-    - http://preview.docs.typo3.org/TYPO3/ExtensionManualExample
-    - null
-
     #t3extbasebook:
     #-
     #- null
 
-    #t3fal:
-    #- http://preview.docs.typo3.org/TYPO3/FileAbstractionLayerReference
-    #- null
+    t3fal:
+    - http://preview.docs.typo3.org/TYPO3/FileAbstractionLayerReference
+    - null
 
     t3start:
     - http://preview.docs.typo3.org/TYPO3/GettingStartedTutorial
