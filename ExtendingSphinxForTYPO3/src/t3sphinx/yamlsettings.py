@@ -170,8 +170,22 @@ class YamlSettings:
         self.dumpToFileAsYaml(self.safeDictionary(data), fname, destdir, msg, frominfo)
 
 
+def setupHighlighting():
+    from sphinx.highlighting import lexers
+    if lexers:
+        from pygments.lexers.web import PhpLexer
+        lexers['php'] = PhpLexer(startinline=True)
+
 
 def processYamlSettings(theDict, parameters={}):
+
+    # This function is called from 'conf.py'.
+    # The name is somewhat misleading as it does more initializing
+    # than just process Yaml Settings. But since the 'conf.py's
+    # calling this function are widespread we keep the name
+    # and plugin more initialization stuff here.
+
+    setupHighlighting()
 
     # There should be at least these keys in parameters.keys():
     dummy = [
