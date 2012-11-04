@@ -5,7 +5,7 @@
 
     Allow a list of all labels of the std domain to be inserted into your
     documentation.
-    
+
     :copyright: Copyright 2012-2099 by the TYPO3 team, see AUTHORS.
     :license: BSD, see LICENSE for details.
     :author: Martin Bless <martin@mbless.de>
@@ -103,7 +103,8 @@ def process_reftargetslist_nodes(app, doctree, fromdocname):
         srcdir = os.path.split(node.astext())[0]
         definition_list = nodes.definition_list(
             classes=['ref-targets-list'])
-        stdLabels = env.domains['std'].data['labels']
+        labels = env.domains['std'].data['labels']
+        anonlabels = env.domains['std'].data['anonlabels']
         for doc in sorted(etc.keys(), key=keyfunc):
             relpath = getRelPath(srcdir, doc).replace('\\','/')
             relpath = os.path.splitext(relpath)[0] + '.html'
@@ -112,7 +113,13 @@ def process_reftargetslist_nodes(app, doctree, fromdocname):
             rstrelpath = os.path.splitext(rstrelpath)[0] + '.txt'
             bullet_list = nodes.bullet_list(rawsource='', bullet='-')
             for lineno, refid in sorted(etc[doc], key=itemgetter(0)):
-                if stdLabels.has_key(refid):
+                if labels.has_key(refid):
+                    flag = 'label'
+                elif anonlabels.has_key(refid):
+                    flag = 'anonlabel'
+                else:
+                    flag = None
+                if flag:
                     linktext1 = '%04d' % lineno
                     refuri1 = '%s?refid=%s&line=%s' % (rstrelpath,
                                                        refid, lineno)
@@ -122,14 +129,18 @@ def process_reftargetslist_nodes(app, doctree, fromdocname):
                                                  refuri=refuri1,
                                                  classes=['e2'])
 
-                    linktext2 = ':ref:`%s`' % refid
+                    if flag == 'label':
+                        linktext2 = ':ref:`%s`' % refid
+                    else:
+                        linktext2 = ':ref:`... <%s>`' % refid
+
                     refuri2 = '%s#%s' % (relpath, refid)
                     reftitle2 = None
                     reference2 = nodes.reference(text=linktext2,
                                                  internal=True,
                                                  refuri=refuri2,
                                                  classes=['e4'])
-                    
+
                     paragraph = nodes.paragraph()
                     paragraph.append(nodes.inline(text='[',
                                                   classes=['e1']))
