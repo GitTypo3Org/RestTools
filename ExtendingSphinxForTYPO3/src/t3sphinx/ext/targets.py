@@ -131,15 +131,23 @@ def process_reftargetslist_nodes(app, doctree, fromdocname):
 
                     if flag == 'label':
                         linktext2 = ':ref:`%s`' % refid
+                        reftitle2 = labels[refid][2]
                     else:
                         linktext2 = ':ref:`... <%s>`' % refid
+                        reftitle2 = None
 
                     refuri2 = '%s#%s' % (relpath, refid)
-                    reftitle2 = None
-                    reference2 = nodes.reference(text=linktext2,
-                                                 internal=True,
-                                                 refuri=refuri2,
-                                                 classes=['e4'])
+                    if reftitle2:
+                        reference2 = nodes.reference(text=linktext2,
+                                                     internal=True,
+                                                     refuri=refuri2,
+                                                     reftitle=reftitle2,
+                                                     classes=['e4'])
+                    else:
+                        reference2 = nodes.reference(text=linktext2,
+                                                     internal=True,
+                                                     refuri=refuri2,
+                                                     classes=['e4'])
 
                     paragraph = nodes.paragraph()
                     paragraph.append(nodes.inline(text='[',
