@@ -9,6 +9,7 @@ conf.py:
   - sphinx.ext.ifconfig
   - sphinx.ext.intersphinx
   - sphinx.ext.todo
+  - t3sphinx.ext.targets
 
   extlinks:
     forge:
