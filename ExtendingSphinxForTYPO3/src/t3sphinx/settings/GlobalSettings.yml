@@ -97,4 +97,6 @@ conf.py:
     - http://preview.docs.typo3.org/TYPO3/TyposcriptSyntaxReference
     - null
 
+  highlight_language: 'php'
+
 ...
