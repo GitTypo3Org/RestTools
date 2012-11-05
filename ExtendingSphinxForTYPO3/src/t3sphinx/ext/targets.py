@@ -89,14 +89,19 @@ class RefTargetsList(Directive):
 ##            refuri="../NextSteps/Index.html#next-steps">
 
 def keyfunc(item):
-    # make key for sorting filepaths
-    item = item.replace('\\', '/').split('/')
-    item.reverse()
-    return '/'.join(item)
+    # make key to sort document paths
+    itemlist = item.replace('\\', '/').lower().split('/')
+    listlen = len(itemlist)
+    for i in range(len(itemlist)):
+        # files first, then subfolders
+        itemlist[i] = '%s%s' % (0 if i+1==listlen else 1, itemlist[i])
+    return '/'.join(itemlist)
 
 def process_reftargetslist_nodes(app, doctree, fromdocname):
     env = app.builder.env
     etc = env.ext_targets_cache
+    cntLabels = 0
+    cntAnonLabels = 0
     for node in doctree.traverse(reftargetslist_node):
         # srcdir = folder path to document with
         # ref-targets-list directive
@@ -115,8 +120,10 @@ def process_reftargetslist_nodes(app, doctree, fromdocname):
             for lineno, refid in sorted(etc[doc], key=itemgetter(0)):
                 if labels.has_key(refid):
                     flag = 'label'
+                    cntLabels += 1
                 elif anonlabels.has_key(refid):
                     flag = 'anonlabel'
+                    cntAnonLabels += 1
                 else:
                     flag = None
                 if flag:
@@ -169,7 +176,11 @@ def process_reftargetslist_nodes(app, doctree, fromdocname):
                 definition_list_item.append(definition)
                 definition_list.append(definition_list_item)
 
-        node.replace_self([definition_list])
+        summary = ('Summary: %s targets (%s with link text, %s without).' %
+                   (cntLabels + cntAnonLabels, cntLabels, cntAnonLabels))
+        summaryP = nodes.paragraph(text=summary,
+                                   classes=['ref-targets-list-summary'])
+        node.replace_self([definition_list, summaryP])
 
 def visit_reftargetslist_node(self, node):
     self.visit_paragraph(node)
