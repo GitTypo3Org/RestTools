@@ -9,6 +9,8 @@ conf.py:
   - sphinx.ext.ifconfig
   - sphinx.ext.intersphinx
   - sphinx.ext.todo
+  - t3sphinx.ext.t3extras
+  - t3sphinx.ext.t3tablerows
   - t3sphinx.ext.targets
 
   extlinks:
@@ -19,19 +21,19 @@ conf.py:
   intersphinx_mapping:
 
     t3admin:
-    - http://preview.docs.typo3.org/TYPO3/AdministratorsGuide
+    - http://docs.typo3.org/TYPO3/AdministratorsGuide
     - null
 
     t3api:
-    - http://preview.docs.typo3.org/TYPO3/CoreApiReference
+    - http://docs.typo3.org/TYPO3/CoreApiReference
     - null
 
     t3cgl:
-    - http://preview.docs.typo3.org/TYPO3/CodingGuidelinesReference
+    - http://docs.typo3.org/TYPO3/CodingGuidelinesReference
     - null
 
     t3editors:
-    - http://preview.docs.typo3.org/TYPO3/EditorsTutorial
+    - http://docs.typo3.org/TYPO3/EditorsTutorial
     - null
 
     #t3extbasebook:
@@ -39,43 +41,43 @@ conf.py:
     #- null
 
     t3fal:
-    - http://preview.docs.typo3.org/TYPO3/FileAbstractionLayerReference
+    - http://docs.typo3.org/TYPO3/FileAbstractionLayerReference
     - null
 
     t3start:
-    - http://preview.docs.typo3.org/TYPO3/GettingStartedTutorial
+    - http://docs.typo3.org/TYPO3/GettingStartedTutorial
     - null
 
     t3inside:
-    - http://preview.docs.typo3.org/TYPO3/InsideTypo3Reference
+    - http://docs.typo3.org/TYPO3/InsideTypo3Reference
     - null
 
     t3install:
-    - http://preview.docs.typo3.org/TYPO3/InstallationGuide
+    - http://docs.typo3.org/TYPO3/InstallationGuide
     - null
 
     # t3isr:
-    # - http://preview.docs.typo3.org/TYPO3/IndexedSearchReference
+    # - http://docs.typo3.org/TYPO3/IndexedSearchReference
     # - null
 
     t3l10n:
-    - http://preview.docs.typo3.org/TYPO3/FrontendLocalizationGuide
+    - http://docs.typo3.org/TYPO3/FrontendLocalizationGuide
     - null
 
     t3security:
-    - http://preview.docs.typo3.org/TYPO3/SecurityGuide
+    - http://docs.typo3.org/TYPO3/SecurityGuide
     - null
 
     t3services:
-    - http://preview.docs.typo3.org/TYPO3/Typo3ServicesReference
+    - http://docs.typo3.org/TYPO3/Typo3ServicesReference
     - null
 
     t3skinning:
-    - http://preview.docs.typo3.org/TYPO3/SkinningReference/
+    - http://docs.typo3.org/TYPO3/SkinningReference/
     - null
 
     t3tca:
-    - http://preview.docs.typo3.org/TYPO3/TCA-Reference
+    - http://docs.typo3.org/TYPO3/TCA-Reference
     - null
 
     # t3templating:
@@ -83,21 +85,25 @@ conf.py:
     #- null
 
     t3ts45:
-    - http://preview.docs.typo3.org/TYPO3/TyposcriptIn45MinutesTutorial
+    - http://docs.typo3.org/TYPO3/TyposcriptIn45MinutesTutorial
     - null
 
     t3tsconfig:
-    - http://preview.docs.typo3.org/TYPO3/TSconfigReference
+    - http://docs.typo3.org/TYPO3/TSconfigReference
     - null
 
     t3tsref:
-    - http://preview.docs.typo3.org/TYPO3/TyposcriptReference
+    - http://docs.typo3.org/TYPO3/TyposcriptReference
     - null
 
     t3tssyntax:
-    - http://preview.docs.typo3.org/TYPO3/TyposcriptSyntaxReference
+    - http://docs.typo3.org/TYPO3/TyposcriptSyntaxReference
     - null
 
   highlight_language: 'php'
+  # html_theme: typo3sphinx
+  # html_theme: t3org
+  html_theme: typo3
+
 
 ...
