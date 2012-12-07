@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# setup.py, mb, 2012-05-28, 2012-08-14, 2012-11-04
+# setup.py, mb, 2012-05-28, 2012-08-14, 2012-12-07
 
 from distutils.core import setup
 
@@ -13,14 +13,16 @@ if 1:
     topdir = 'src/t3sphinx/'
     topdirlen = len(topdir)
 
+    t3sphinx_package_data = []
     result = []
     for path, dirs, files in os.walk(topdir + 'themes'):
         dirs.sort()
         files.sort()
         for afile in files:
             result.append(ospj(path[topdirlen:], afile))
-    t3sphinx_package_data = result
+    t3sphinx_package_data.extend(result)
 
+    result = []
     for path, dirs, files in os.walk(topdir + 'settings'):
         dirs.sort()
         files.sort()
@@ -28,6 +30,7 @@ if 1:
             result.append(ospj(path[topdirlen:], afile))
     t3sphinx_package_data.extend(result)
 
+    result = []
     for path, dirs, files in os.walk(topdir + 'resources'):
         dirs.sort()
         files.sort()
@@ -35,6 +38,7 @@ if 1:
             result.append(ospj(path[topdirlen:], afile))
     t3sphinx_package_data.extend(result)
 
+    result = []
     for path, dirs, files in os.walk(topdir + 'ext'):
         dirs.sort()
         files.sort()
