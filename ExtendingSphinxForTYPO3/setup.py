@@ -46,6 +46,14 @@ if 1:
             result.append(ospj(path[topdirlen:], afile))
     t3sphinx_package_data.extend(result)
 
+    result = []
+    for path, dirs, files in os.walk(topdir + 'builders'):
+        dirs.sort()
+        files.sort()
+        for afile in files:
+            result.append(ospj(path[topdirlen:], afile))
+    t3sphinx_package_data.extend(result)
+
 if 1:
     setup(
         name = 't3sphinx',
