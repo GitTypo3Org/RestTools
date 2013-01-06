@@ -77,7 +77,7 @@ conf.py:
     - null
 
     t3tca:
-    - http://docs.typo3.org/TYPO3/TCA-Reference
+    - http://docs.typo3.org/TYPO3/TCAReference
     - null
 
     # t3templating:
