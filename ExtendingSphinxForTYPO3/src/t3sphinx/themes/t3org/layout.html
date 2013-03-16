@@ -118,11 +118,11 @@
 	</div>
 	<div class="hnav-related-2">
 		<div class="hnav-div-layout">
-			<a href="#" onclick="setActiveStyleSheet('Style 2'); return false;" title="experimental style 2" class="whitewashed">two</a>&nbsp; 
+			<a href="#" onclick="setActiveStyleSheet('Style 2'); return false;" title="experimental style 2" class="whitewashed">two</a>&nbsp;
 			<a href="#" onclick="setActiveStyleSheet('Style 3'); return false;" title="experimental style 3" class="whitewashed">three</a>
 			Layout:
-				<a href="#" onclick="setActiveStyleSheet('Fixed width'); return false;" title="select fixed width layout" class="alt-stylesheet-0">fixed</a>&nbsp; 
-				<a href="#" onclick="setActiveStyleSheet('Adaptive width'); return false;" title="select adaptive width layout" class="alt-stylesheet-1">adaptive</a>&nbsp; 
+				<a href="#" onclick="setActiveStyleSheet('Fixed width'); return false;" title="select fixed width layout" class="alt-stylesheet-0">fixed</a>&nbsp;
+				<a href="#" onclick="setActiveStyleSheet('Adaptive width'); return false;" title="select adaptive width layout" class="alt-stylesheet-1">adaptive</a>&nbsp;
 		</div>
 	</div>
 </div>
@@ -167,12 +167,12 @@ http://typo3.org/typo3conf/ext/t3org_template/html/page_default.html
 	<script src="http://docs.typo3.org/t3extras/fonts/share.js"></script>
 	<script src="http://docs.typo3.org/t3extras/js/jquery.MultiFile.pack.js"></script>
 	<script src="http://docs.typo3.org/t3extras/js/prettyCheckboxes.js"></script>
+	<script src="http://docs.typo3.org/js/docstypo3org-1.js"></script>
 	<script src="http://docs.typo3.org/t3extras/js/jcookies.js"></script>
 	<script src="http://docs.typo3.org/t3extras/js/main.js"></script>
 	<script src="http://docs.typo3.org/t3extras/js/dip.js"></script>
-
 	<script src="http://docs.typo3.org/js/styleswitcher.js"></script>
-	<script src="http://docs.typo3.org/js/t3_org_doc_main.js"></script>
+	<script src="http://docs.typo3.org/js/docstypo3org-2.js"></script>
 
 	</head>
 
@@ -182,10 +182,6 @@ http://typo3.org/typo3conf/ext/t3org_template/html/page_default.html
 			<div id="aside" class="a">
 				<h3><a href="{{ pathto(master_doc) }}">{{ shorttitle|e }}</a></h3>
 				{{ toctree(collapse=True) }}
-				<div class="toc">
-					<p id="p-on-this-page">Bookmarks within this page:</p>
-					{{ toc }}
-				</div>
 			</div>
 
 			<div class="s d">
@@ -197,66 +193,14 @@ http://typo3.org/typo3conf/ext/t3org_template/html/page_default.html
 			</div><!-- /#content -->
 		</div><!-- /.d -->
 		<div id="header" class="h">
-			<a id="logo" href="#"><img width="118" height="34" alt="Typo3 Logo" src="http://docs.typo3.org/t3extras/i/typo3-logo.png"></a>
-			<ul class="nav">
-				<li><a href="http://docs.typo3.org/">Start</a>
-				</li>
-				<li><a href="http://docs.typo3.org/typo3cms">CMS</a>
-					<div class="nav-sub">
-						<div class="col">
-							<h4><span>Examples</span></h4>
-							<ul>
-								<li><a href="http://docs.typo3.org/typo3cms/ExtensionManualExample">       ExtensionManualExample       </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/OfficialManualExample">        OfficialManualExample        </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/Extensions">                   Extensions                   </a></li>
-							</ul>
-							<h4><span>Extensions</span></h4>
-							<ul>
-								<li><a href="http://docs.typo3.org/typo3cms/Extensions">Extensions</a></li>
-							</ul>
-							<h4><span>Guides</span></h4>
-							<ul>
-								<li><a href="http://docs.typo3.org/typo3cms/AdministratorsGuide">          AdministratorsGuide          </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/FrontendLocalizationGuide">    FrontendLocalizationGuide    </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/InstallationGuide">            InstallationGuide            </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/SecurityGuide">                SecurityGuide                </a></li>
-							</ul>
-						</div>
-						<div class="col">
-							<h4><span>References</span></h4>
-							<ul>
-								<li><a href="http://docs.typo3.org/typo3cms/CodingGuidelinesReference">    CodingGuidelinesReference      </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/CoreApiReference">             CoreApiReference               </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/FileAbstractionLayerReference">FileAbstractionLayerReference  </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/InsideTypo3Reference">         InsideTypo3Reference           </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/SkinningReference">            SkinningReference              </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/TCA-Reference">                TCA-Reference                  </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/TSconfigReference">            TSconfigReference              </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/Typo3ServicesReference">       Typo3ServicesReference         </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/TyposcriptReference">          TyposcriptReference            </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/TyposcriptSyntaxReference">    TyposcriptSyntaxReference      </a></li>
-							</ul>
-						</div>
-						<div class="col">
-							<h4><span>Tutorials</span></h4>
-							<ul>
-								<li><a href="http://docs.typo3.org/typo3cms/EditorsTutorial">              EditorsTutorial              </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/GettingStartedTutorial">       GettingStartedTutorial       </a></li>
-								<li><a href="http://docs.typo3.org/typo3cms/TyposcriptIn45MinutesTutorial">TyposcriptIn45MinutesTutorial</a></li>
-							</ul>
-						</div>
-					</div>
-				</li>
-				<li><a href="/flow">Flow</a>
-				</li>
-				<li><a href="/neos">Neos</a>
-				</li>
+			<a id="logo" href="#"><img width="118" height="34" alt="TYPO3 Logo" src="http://docs.typo3.org/t3extras/i/typo3-logo.png"></a>
+			<ul class="nav" id="ul-nav">
+				<!-- #ul-nav gets replaced by js -->
+				<li>&nbsp;</li>
 			</ul>
-			<div class="header-bg">
-			</div>
+			<div class="header-bg"></div>
 		</div>
-
 	</div><!-- /#page -->
+	<div id="naviwest"><div id="naviwestpayload"></div></div>
 </body>
 </html>
-

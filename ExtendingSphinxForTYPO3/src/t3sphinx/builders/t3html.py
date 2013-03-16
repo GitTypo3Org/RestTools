@@ -11,6 +11,7 @@
 
 import sphinx
 import os
+import posixpath
 import codecs
 import sphinx.builders.html
 import sphinx.writers.html
@@ -19,6 +20,12 @@ from docutils.core import Publisher
 from docutils.io import DocTreeInput, StringOutput
 from docutils.readers.doctree import Reader as DoctreeReader
 from docutils.utils import new_document
+from sphinx.addnodes import nodes
+try:
+    from PIL import Image        # check for the Python Imaging Library
+except ImportError:
+    Image = None
+
 
 # from sphinx.writers.html import HTMLWriter, HTMLTranslator, SmartyPantsHTMLTranslator
 # from sphinx.writers.html import HTMLWriter, HTMLTranslator, SmartyPantsHTMLTranslator
@@ -27,6 +34,7 @@ from docutils.utils import new_document
 from docutils.writers.html4css1 import HTMLTranslator as BaseTranslator
 
 b = str
+b = unicode
 
 printing = False
 
@@ -36,13 +44,71 @@ import docutils.nodes
 
 class span(docutils.nodes.Inline, docutils.nodes.TextElement): pass
 
-
+# GLOBALS we need
+LAST_CUR_NODE = None
+LAST_TOC_DIV = None
 
 
 class HTMLWriter(sphinx.writers.html.Writer):
     pass
 
 class HTMLTranslator(sphinx.writers.html.HTMLTranslator):
+
+    def visit_image(self, node):
+        olduri = node['uri']
+        s = olduri.lower()
+        go = True
+        go = go and not Image is None
+        go = go and not (s.endswith('svg') or
+                         s.endswith('svgz') or
+                         s.endswith('swf'))
+        go = go and not (node.has_key('width') or
+                         node.has_key('height') or
+                         node.has_key('scale'))
+        if go and node.has_key('classes'):
+            go = go and not 'screenshot-detail' in node['classes']
+        if go:
+            # Try to figure out image height and width.  Docutils does that too,
+            # but it tries the final file name, which does not necessarily exist
+            # yet at the time the HTML file is written.
+            try:
+                im = Image.open(os.path.join(self.builder.srcdir, olduri))
+            except (IOError, # Source image can't be found or opened
+                    UnicodeError):  # PIL doesn't like Unicode paths.
+                go = False # better warn?
+            else:
+                im_width = str(im.size[0])
+                im_height = str(im.size[1])
+                del im
+        if go:
+            # rewrite the URI if the environment knows about it
+            if olduri in self.builder.images:
+                node['uri'] = posixpath.join(self.builder.imgpath,
+                                             self.builder.images[olduri])
+            atts = {}
+            atts['src'] = node['uri']
+            if not node.has_key('classes'):
+                node['classes'] = ['img-scaling']
+            elif not 'img-scaling' in node['classes']:
+                node['classes'].append('img-scaling')
+            else:
+                pass
+            atts['style'] = 'max-width: %spx;' % im_width
+            if node.has_key('alt'):
+                atts['alt'] = node['alt']
+            else:
+                atts['alt'] = node['uri']
+            if node.has_key('align'):
+                self.body.append('<div align="%s" class="align-%s">' %
+                                 (node['align'], node['align']))
+                self.context.append('</div>\n')
+            else:
+                self.context.append('')
+            self.body.append(self.emptytag(node, 'img', '', **atts))
+        else:
+            del s, go
+            sphinx.writers.html.HTMLTranslator.visit_image(self,node)
+        return
 
     def visit_literal(self, node):
         self.body.append(self.starttag(node, 'span', '', CLASS='docutils literal tt'))
@@ -143,7 +209,7 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
                 f2 = codecs.open(outfilename, 'w', 'utf-8')
                 pprint(self.env.intersphinx_named_inventory, f2, width=160)
                 f2.close
-           
+
 
 
         outfilename = self.get_outfilename(docname) + '.pformat.txt'
@@ -158,6 +224,16 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
                 f.close()
         except (IOError, OSError), err:
             self.warn("error writing file %s: %s" % (outfilename, err))
+
+
+    def handle_page(self, pagename, addctx, templatename='page.html',
+                    outfilename=None, event_arg=None):
+        """addctx['toc'] is only here. To make that accessible
+        we add it to self.
+        """
+        self.t3addctx = addctx
+        super(self.__class__, self).handle_page(pagename, addctx, templatename,
+            outfilename, event_arg)
 
 
     def get_doc_context(self, docname, body, metatags):
@@ -274,6 +350,9 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
             metatags = metatags,
             rellinks = rellinks,
             sourcename = sourcename,
+
+            self_toc = self_toc, # mb, 2012-12-15
+
             toc = toc,
             # only display a TOC if there's more than one item to show
             display_toc = (self.env.toc_num_entries[docname] > 1),
@@ -283,6 +362,9 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
 
 
     def _get_local_toctree(self, docname, collapse=True, **kwds):
+
+        global LAST_CUR_NODE, LAST_TOC_DIV
+
         toctree_for = self.env.get_toctree_for(docname, self, collapse, **kwds)
         def dumpit(fname='U:\\htdocs\\LinuxData200\\py-dev\\LOG.txt'):
             import codecs
@@ -317,7 +399,7 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
             settings_overrides=None
             config_section=None
             enable_exit_status=False
-            
+
             docutils.core.publish_from_doctree(document, destination_path=None,
                          writer=None, writer_name='pseudoxml',
                          settings=None, settings_spec=None,
@@ -343,7 +425,7 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
             pub.publish()
             result = pub.writer.parts
         if 0:
-            # doesn't work yet!?!            
+            # doesn't work yet!?!
             publishAsXml(toctree_for)
 
 
@@ -353,13 +435,16 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
             ul_level = 0
             last_nav_aside_lvl = ''
             cnt = 0
+
             def default_visit(self, node):
                 """Override for generic, uniform traversals."""
 
+                global LAST_TOC_DIV, LAST_CUR_NODE
                 if hasattr(node, 'attributes'):
                     self.cnt += 1
                     classes = node.attributes.get('classes', [])
                     newlist = []
+                    iscurrent = False
                     for cl in classes:
                         if not cl in newlist:
                             newlist.append(cl)
@@ -368,6 +453,19 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
                                 newlist.append(self.last_nav_aside_lvl)
                             if cl == 'current':
                                 newlist.append('cur')
+                                iscurrent = True
+                    if node.attributes.get('iscurrent', False) and type(node.parent) == nodes.list_item:
+                        # print node.pformat()
+                        LAST_CUR_NODE = node
+                        try:
+                            self_toc = self.t3addctx['self_toc']
+                        except:
+                            self_toc = None
+                        if self_toc:
+                            LAST_TOC_DIV = nodes.container(ids=["flyOutToc"], classes=['flyOutToc'])
+                            LAST_TOC_DIV.append(nodes.paragraph(text='within this page:'))
+                            LAST_TOC_DIV.append(self_toc)
+
                     newlist.append('cnt-%s' % self.cnt)
                     if isinstance(node, docutils.nodes.reference) and self.last_nav_aside_lvl and not (self.last_nav_aside_lvl in newlist):
                         newlist.append(self.last_nav_aside_lvl)
@@ -397,7 +495,7 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
                         n = n.parent
                     if mycount != 0:
                         print
-                
+
 
 
 
@@ -428,10 +526,20 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
         if toctree_for:
             doc = new_document(b('<partial node>'))
             doc.append(toctree_for)
+
+
+            # make self.t3addctx['toc'] available
+            # make it a visitor class variable
+            visitor.t3addctx = self.t3addctx
             toctree_for.walkabout(visitor(doc))
+            if not LAST_TOC_DIV is None:
+                LAST_CUR_NODE.replace_self([LAST_CUR_NODE, LAST_TOC_DIV])
+            LAST_CUR_NODE = None
+            LAST_TOC_DIV = None
             result = self.render_partial(toctree_for)['fragment']
+
         else:
-            result = None
+            result = ''
         return result
 
 

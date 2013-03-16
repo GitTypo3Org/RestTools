@@ -30,7 +30,7 @@ good_term_combinations = [
       (0, '1d', ['property',             'description', 'default']),
       (0, '1e', [            'datatype', 'description', 'default']),
       (0, '1f', ['property', 'datatype', 'description', 'default']),
-     
+
     # (0, '20', [                                            ]),
     # (0, '21', ['datatype',                                 ]),
     # (0, '22', [            'examples',                     ]),
@@ -47,7 +47,7 @@ good_term_combinations = [
       (0, '2d', ['datatype',             'comment', 'default']),
       (0, '2e', [            'examples', 'comment', 'default']),
       (0, '2f', ['datatype', 'examples', 'comment', 'default']),
-     
+
     # (0, '30', [                                          ]),
     # (0, '31', ['var',                                    ]),
     # (0, '32', [       'phptype',                         ]),
@@ -156,9 +156,10 @@ def transform_definition_list(dl, app, docname=''):
         classes.append('t3-row-rt%s' % rowtype)
         classes.append('t3-row-id%s' % rowid)
         t3row.attributes['classes'] = classes
+        t3row.append(nodes.container(classes=['cc'])) # div with: clear:both;
     else:
         t3row = None
-      
+
     return t3row, found
 
 
@@ -172,9 +173,9 @@ def tableRowContainerFilter(node):
 
 
 ## Sphinx core events (hooks)
-## 
+##
 ## http://sphinx-doc.org/latest/ext/appapi.html#sphinx-core-events
-## 
+##
 ## builder-inited(app)
 ## env-get-outdated(app, env, added, changed, removed)
 ## env-purge-doc(app, env, docname)
@@ -222,7 +223,7 @@ if __name__=="__main__":
 ##        <paragraph classes="first">
 ##            ccccc
 
-## 
+##
 ## <definition_list classes="docutils">
 ##     <definition_list_item>
 ##         <term>
@@ -230,7 +231,7 @@ if __name__=="__main__":
 ##         <definition>
 ##             <paragraph classes="first last">
 ##                 Name of the property
-## 
+##
 
 
 

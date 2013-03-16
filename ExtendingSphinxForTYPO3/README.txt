@@ -2,7 +2,7 @@
 README.txt
 ==========
 
-mb, 2012-05-30, 2012-08-20
+mb, 2012-05-30, 2013-03-16
 
 ExtendingSphinxForTYPO3 is a Python package that extends the capabilities
 of Sphinx specifically for TYPO3. After installation it can be loaded
@@ -17,7 +17,7 @@ Installation
 ============
 
 To install go to the directory ./ExtendingSphinxForTYPO3 where the
-setup.py file is located and run ``python setup.py install``. To 
+setup.py file is located and run ``python setup.py install``. To
 reinstall you can do this as often as you want.
 
 At the commandline::
@@ -37,6 +37,7 @@ or maybe, if you need to be administrator on linux::
    ``ExtendingSphinxForTYPO3/src/t3sphinx/resources/typo3_codeblock_for_conf.py`` to your
    ``conf.py`` file.
 
+
 What does it do?
 ================
 
@@ -46,9 +47,27 @@ code block:
 - It provides the 'typo3sphinx' theme and sets ``html_theme = 'typo3sphinx'``
 - It provides GlobalSettings.yml (YAML)
 - It will read and apply GlobalSettings.yml and Settings.yml (YAML)
-- It make the "t3-field-list-table" directive available.
+- It makes the "t3-field-list-table" directive available.
   See http://mbless.de/4us/typo3-oo2rest/06-The-%5Bfield-list-table%5D-directive/1-demo.rst.html
   for a preliminary description. Other than described there use
   ``t3-field-list-table`` instead of ``field-list-table``.
+
+
+Updates of ExtendingSphinxForTYPO3
+==================================
+
+A typical commit message is this:
+
+Update the TYPO3 specific extensions for Sphinx to reflect the lastest
+state we are using on the server.
+
+Whenever a new version of "ExtendingSphinxForTYPO3" is issued do these
+three steps to update your local machine::
+
+  $ git clone git://git.typo3.org/Documentation/RestTools.git RestTools
+  $ cd RestTools/ExtendingSphinxForTYPO3
+  $ (sudo) python setup.py install
+
+Enjoy!
 
 End.
