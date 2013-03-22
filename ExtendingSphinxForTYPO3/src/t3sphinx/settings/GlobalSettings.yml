@@ -36,68 +36,68 @@ conf.py:
     - http://docs.typo3.org/TYPO3/EditorsTutorial
     - null
 
-    #t3extbasebook:
-    #-
-    #- null
+    t3extbasebook:
+    - http://docs.typo3.org/typo3cms/ExtbaseFluidBook/
+    - null
 
     t3fal:
-    - http://docs.typo3.org/TYPO3/FileAbstractionLayerReference
+    - http://docs.typo3.org/typo3cms/FileAbstractionLayerReference
     - null
 
     t3start:
-    - http://docs.typo3.org/TYPO3/GettingStartedTutorial
+    - http://docs.typo3.org/typo3cms/GettingStartedTutorial
     - null
 
     t3inside:
-    - http://docs.typo3.org/TYPO3/InsideTypo3Reference
+    - http://docs.typo3.org/typo3cms/InsideTypo3Reference
     - null
 
     t3install:
-    - http://docs.typo3.org/TYPO3/InstallationGuide
+    - http://docs.typo3.org/typo3cms/InstallationGuide
     - null
 
     # t3isr:
-    # - http://docs.typo3.org/TYPO3/IndexedSearchReference
+    # - http://docs.typo3.org/typo3cms/IndexedSearchReference
     # - null
 
     t3l10n:
-    - http://docs.typo3.org/TYPO3/FrontendLocalizationGuide
+    - http://docs.typo3.org/typo3cms/FrontendLocalizationGuide
     - null
 
     t3security:
-    - http://docs.typo3.org/TYPO3/SecurityGuide
+    - http://docs.typo3.org/typo3cms/SecurityGuide
     - null
 
     t3services:
-    - http://docs.typo3.org/TYPO3/Typo3ServicesReference
+    - http://docs.typo3.org/typo3cms/Typo3ServicesReference
     - null
 
     t3skinning:
-    - http://docs.typo3.org/TYPO3/SkinningReference/
+    - http://docs.typo3.org/typo3cms/SkinningReference/
     - null
 
     t3tca:
-    - http://docs.typo3.org/TYPO3/TCAReference
+    - http://docs.typo3.org/typo3cms/TCAReference
     - null
 
-    # t3templating:
-    #-
-    #- null
+    t3templating:
+    - http://docs.typo3.org/typo3cms/TemplatingTutorial/
+    - null
 
     t3ts45:
-    - http://docs.typo3.org/TYPO3/TyposcriptIn45MinutesTutorial
+    - http://docs.typo3.org/typo3cms/TyposcriptIn45MinutesTutorial
     - null
 
     t3tsconfig:
-    - http://docs.typo3.org/TYPO3/TSconfigReference
+    - http://docs.typo3.org/typo3cms/TSconfigReference
     - null
 
     t3tsref:
-    - http://docs.typo3.org/TYPO3/TyposcriptReference
+    - http://docs.typo3.org/typo3cms/TyposcriptReference
     - null
 
     t3tssyntax:
-    - http://docs.typo3.org/TYPO3/TyposcriptSyntaxReference
+    - http://docs.typo3.org/typo3cms/TyposcriptSyntaxReference
     - null
 
   highlight_language: 'php'
