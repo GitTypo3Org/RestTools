@@ -21,7 +21,7 @@ conf.py:
   intersphinx_mapping:
 
     t3admin:
-    - http://docs.typo3.org/TYPO3/AdministratorsGuide
+    - http://docs.typo3.org/TYPO3/MaintenanceGuide
     - null
 
     t3api:
