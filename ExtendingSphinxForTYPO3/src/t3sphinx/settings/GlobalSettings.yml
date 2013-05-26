@@ -20,7 +20,7 @@ conf.py:
 
   intersphinx_mapping:
 
-    t3admin:
+    t3maintenance:
     - http://docs.typo3.org/TYPO3/MaintenanceGuide
     - null
 
