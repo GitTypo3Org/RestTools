@@ -2,5 +2,10 @@
     "name": "typo3/resttools",
     "type": "typo3-flow-package",
     "description": "Tools for handling reStructuredText documents",
-    "license": "GPL-3.0+"
+    "license": "GPL-3.0+",
+    "autoload": {
+        "psr-0": {
+            "TYPO3\\RestTools": "Classes"
+        }
+    }
 }
