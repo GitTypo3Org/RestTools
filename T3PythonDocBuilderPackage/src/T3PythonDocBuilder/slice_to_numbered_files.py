@@ -1,5 +1,5 @@
 # sclice_to_numbered_files.py
-# mb, 2012-05-21, 2012-05-30
+# mb, 2012-05-21, 2012-05-30, 2013-05-25
 
 import codecs
 import os
@@ -15,30 +15,13 @@ rstfileext = '.rst'
 
 depth = 3
 
-
-CUTTER_MARK_IMAGES = '.. ######CUTTER_MARK_IMAGES######'
-
-RSTFILE_TOPTEXT = """\
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. ==================================================
-.. DEFINE SOME TEXTROLES
-.. --------------------------------------------------
-.. role::   underline
-.. role::   typoscript(code)
-.. role::   ts(typoscript)
-   :class:  typoscript
-.. role::   php(code)
-
-"""
+from constants import CUTTER_MARK_IMAGES
+from constants import SNIPPETS
+from constants import SECTION_UNDERLINERS
+section_underliners = ''.join(SECTION_UNDERLINERS)
 
 
 HTML_THEME_PATH_IN_CONF_PY = """html_theme_path = ['../../../res/sphinx/themes/', '/usr/share/sphinx/themes/']"""
-
-SECTION_UNDERLINERS = """=-^"~'#*$`+;.,_/\%&!"""
 
 levels = [0 for i in range(depth+1)]
 removeFromFilename = ''.join([ chr(i) for i in range(128) if chr(i).lower() not in 'abcdefghijklmnopqrstuvwxyz0123456789-_[]{}()+'])
@@ -108,7 +91,7 @@ def main(f1path, destdir):
             if hot:
                 # switch to new file
                 underliner = lines[2][0]
-                p = SECTION_UNDERLINERS.find(underliner)
+                p = section_underliners.find(underliner)
                 if p > -1 and p < depth:
 
                     # close current file
@@ -131,8 +114,18 @@ def main(f1path, destdir):
                     if not ospe(curdestdir):
                         os.makedirs(curdestdir)
                     f2 = codecs.open(ospj(curdestdir, f2name) + rstfileext, 'w', 'utf-8-sig')
+
+                    f2.write(SNIPPETS.for_your_information)
+
+
+
+
+
+
+                    s = '.. include:: %sIncludes.txt\n' % ((len(prefixparts) * '../'),)
+                    f2.write(s)
                     f2.write('.. include:: %s\n\n' % fnameimages)
-                    f2.write(RSTFILE_TOPTEXT)
+
                     if len(prefixparts) <= (depth-1):
                         prefix = '-'.join(prefixparts)
                         globexpr = prefix + '/*'

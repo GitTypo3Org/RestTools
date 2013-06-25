@@ -5,7 +5,7 @@
 Convert an OpenOffice (X)HTML file to reST.
 """
 
-__version__ = '1.1.3'
+__version__ = '1.2.0'
 
 # leave your name and notes here:
 __history__ = """\
@@ -26,6 +26,7 @@ __history__ = """\
 2012-08-29  v1.1.2: write '.. t3-field-list-table::' instead of
             '.. field-list-table::'
 2012-08-29  v1.1.3: add option tablesas=t3flt
+2013-05-26  v1.2.0: now with import * from constants
 """
 
 __copyright__ = """\
@@ -65,66 +66,13 @@ except ImportError:
 
 from textwrap import TextWrapper
 
+from constants import *
 
 import htmlentitydefs
 entitydefs = HTMLParser.entitydefs = {'apos':u"'"}
 for k, v in htmlentitydefs.name2codepoint.iteritems():
     entitydefs[k] = unichr(v)
 
-WHITESPACECHARS = '\t\n\x0b\x0c\r '
-
-SECTION_UNDERLINERS = list("""=-^"~'#*$`+;.,_/\%&!""")
-
-META_MAPPING = {
-    # name lower : (canonical spelling, keep in output?),
-    'content-type'   : ('Content-type'  , 0),
-    'description'    : ('Description'   , 1),
-    'generator'      : ('Generator'     , 0),
-    'author'         : ('Author'        , 1),
-    'created'        : ('Created'       , 1),
-    'changedby'      : ('Changed by'    , 1),
-    'changed'        : ('Changed'       , 1),
-    'classification' : ('Classification', 1),
-    'content-style-type' : ('Content-style-type', 0),
-    'keywords'       : ('Keywords'      , 1),
-    'author'         : ('Author'        , 1),
-    'email'          : ('Email'         , 1),
-    'language (en, de, fr, nl, dk, es, ... )' : ('Language'  , 1),
-    'resourceloaderdynamicstyles' : ('Resource_Loader_Dynamic_Styles', 0),
-    'sdfootnote'     : ('sdfootnote'    , 0),
-    'sdendnote'      : ('sdendnote'     , 0),
-}
-
-NL = '\n'
-CRLF = '\r\n'
-
-CUTTER_MARK_IMAGES = '.. ######CUTTER_MARK_IMAGES######'
-
-class Dummy(object):
-    pass
-
-SNIPPETS = Dummy()
-SNIPPETS.for_your_information = """\
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-"""
-SNIPPETS.define_some_textroles = """\
-.. ==================================================
-.. DEFINE SOME TEXTROLES
-.. --------------------------------------------------
-.. role::   underline
-.. role::   typoscript(code)
-.. role::   ts(typoscript)
-   :class:  typoscript
-.. role::   php(code)
-
-"""
-
-class Dummy(object):
-    pass
 
 MAIN = Dummy()
 MAIN.options = {
@@ -1907,7 +1855,7 @@ def main(f1name, f2name, f3name=None, f4name=None, appendlog=0, taginfo=0, table
         result = P.datacollector.stop_document('initial')
         if 1:
             f2.write(SNIPPETS.for_your_information)
-        if 1:
+        if 0:
             f2.write(SNIPPETS.define_some_textroles)
         else:
             if P.datacollector.is_used_textrole_underline:

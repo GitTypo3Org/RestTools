@@ -235,6 +235,8 @@ class DocumentationMaker:
                     f2.write(s)
                     for e in tte:
                         f2.write('   %s%s' % (e, NL))
+                    if not relpath2 and f2name == 'Index.rst':
+                        f2.write('   Targets\n')
                     f2.write('\n')
                 f2.close()
                 f1.close()
@@ -375,12 +377,29 @@ def main(arg):
     return retCode, msg
 
 
-if __name__ == "__main__":
+if 0 and __name__ == "__main__":
     if 0 and "testing at home":
         srcdir  = 'D:/TYPO3-Documentation/t3doc-srv123-mbless/git.typo3.org/Documentation/TYPO3/Reference/Typoscript.git/Documentation/_not_versioned/_genesis/temp'
         destdir = 'D:/TYPO3-Documentation/t3doc-srv123-mbless/git.typo3.org/Documentation/TYPO3/Reference/Typoscript.git/Documentation\\source'
         srcdirimages = 'D:/TYPO3-Documentation/t3doc-srv123-mbless/git.typo3.org/Documentation/TYPO3/Reference/Typoscript.git/Documentation/_not_versioned/_genesis'
-        main(srcdir, destdir, srcdirimages, verbose=True)
     else:
         print "please import this script and run main(...)"
 
+if 0 and __name__ == "__main__":
+    if 1 and "testing at home":
+        class Namespace(object):
+            """Simple object for storing attributes."""
+
+            def __init__(self, **kwargs):
+                for name in kwargs:
+                    setattr(self, name, kwargs[name])
+
+        arg = Namespace()
+        arg.f2path_rst = 'temp\\t3pdb\\manual.t3flt.rst'
+        arg.safetempdir_sliced = 'temp2\\t3pdb\\_sliced'
+        arg.f2path_documentation = 'temp2\\t3pdb\\Documentation'
+        arg.srcdirimages = 'temp2\\t3pdb'
+        arg.resdir = 'resources'
+
+
+        retCode, msg = main(arg)

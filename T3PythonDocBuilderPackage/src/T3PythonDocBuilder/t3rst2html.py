@@ -6,6 +6,7 @@
 
 # mb, 2012-05-02: fix wrong urls for abs paths for stylesheets in class MyHTMLTranslator(HTMLTranslator)
 # mb, 2012-08-30: provide directive(s) (t3-)field-list-table here
+# mb, 2013-05-26: drop the "preview."
 
 """
 A front end to the Docutils Publisher, producing HTML.
@@ -52,7 +53,7 @@ class MyHTMLTranslator(HTMLTranslator):
 
         # mb, 2012-05-02
         # the standardwriter doesn't handle absolute css urls and creates:
-        # [u'<link rel="stylesheet" href="../../../../render-ter-extensions/http:/preview.docs.typo3.org/css/typo3_docutils_styles.css" type="text/css" />\n']
+        # [u'<link rel="stylesheet" href="../../../../render-ter-extensions/http:/docs.typo3.org/css/typo3_docutils_styles.css" type="text/css" />\n']
         temp = []
         for s in self.stylesheet:
             p1 = s.find('href="')

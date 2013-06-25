@@ -34,7 +34,7 @@ if 0 and 'pywin' in sys.modules:
     k = 'write_sphinx_structure'
     if sys.modules.get(k, None):
         del sys.modules[k]
-    sys.argv = [sys.argv[0]] + ['workspaces_manual.sxw', 'temp']
+    sys.argv = [sys.argv[0]] + ['temp\\manual.sxw', 'temp']
 
 import subprocess
 import zipfile
@@ -45,6 +45,9 @@ import copyclean
 import ooxhtml2rst
 import normalize_empty_lines
 import write_sphinx_structure
+import prepend_sections_with_labels
+## import remove_first_t3fieldlisttable_row
+import tweak_dllisttables
 
 ospe = os.path.exists
 ospj = os.path.join
@@ -193,7 +196,7 @@ class Main:
         # more settings
         self.usr_bin_python = '/usr/bin/python'
         self.usr_bin_python = 'python'
-        self.t3docutils_stylesheet_path = 'http://preview.docs.typo3.org/css/typo3_docutils_styles.css'
+        self.t3docutils_stylesheet_path = 'http://docs.typo3.org/css/typo3_docutils_styles.css'
         self.t3rst2html_script = 't3rst2html.py'
         self.t3docutils_template_path = 'resources/t3docutils_template.txt' 
 
@@ -340,7 +343,9 @@ class Main:
             arg.appendlog = 0
             arg.taginfo = 0
 
-            for i,tablesas in enumerate(['t3flt', 'dl', 'flt']):
+            tabletypes = ['t3flt', 'dl', 'flt']
+            tabletypes = ['t3flt', 'dl']
+            for i,tablesas in enumerate(tabletypes):
                 outfile = arg.outfile[:-3] + tablesas + '.rst'
                 ooxhtml2rst.main(arg.infile, outfile, arg.treefile,
                                  arg.logfile, arg.appendlog, arg.taginfo, tablesas)
@@ -416,6 +421,15 @@ class Main:
         # make ./Documentation structure
         # --------------------------------------------------
 
+        if 1 and 'select the rst file with the desired table handling':
+            for self.f2path_rst in self.rstfilepaths:
+                if self.f2path_rst.endswith('.t3flt.rst'):
+                    pass
+                if self.f2path_rst.endswith('.dl.rst'):
+                    break
+            else:
+                self.f2path_rst = None
+
         arg = Namespace()
         arg.f2path_rst = self.f2path_rst
         arg.safetempdir_sliced = self.safetempdir_sliced
@@ -423,6 +437,28 @@ class Main:
         arg.srcdirimages = self.safetempdir
         arg.resdir = self.resdir
         retCode, msg = write_sphinx_structure.main(arg)
+
+
+        # travel all *.rst files in ./Documentation and
+        # insert an intersphinx label before each section
+        # only underlined sections are recognized
+        prepend_sections_with_labels.main(self.f2path_documentation)
+
+
+        ## ####
+        ## Ah, oh, uh, this was a silly idea. Forget it.
+        ## 
+        ## # travel all *.rst files in ./Documentation and
+        ## # try to check whether the first row of a .. t3-field-list-table::
+        ## # should be removed. If so do so.
+        ## remove_first_t3fieldlisttable_row.main(self.f2path_documentation)
+
+
+        # travel all *.rst files in ./Documentation and
+        # and try to tweak the '.. container:: table-row' of 'definition list tables'
+        tweak_dllisttables.main(self.f2path_documentation)
+
+
 
         retCode = 0
         msg = "Ok"
