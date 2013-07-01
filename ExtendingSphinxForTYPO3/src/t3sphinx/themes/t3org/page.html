@@ -9,5 +9,8 @@
 #}
 {% extends "layout.html" %}
 {% block body %}
-  {{ body }}
+<div class="body">
+	<!-- highlighting of doctools.js works within the div.body container -->
+	{{ body }}
+</div><!-- /div.body -->
 {% endblock %}

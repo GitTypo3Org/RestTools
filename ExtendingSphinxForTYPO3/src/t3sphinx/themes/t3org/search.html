@@ -8,24 +8,18 @@
     :license: BSD, see LICENSE for details.
 #}
 {% extends "layout.html" %}
-
-
-
-{% block liShowSource %}
-{% endblock %}
-
-
-
-
-
 {% set title = _('Search') %}
 {% set script_files = script_files + ['_static/searchtools.js'] %}
+
+
 {% block extrahead %}
   <script type="text/javascript">
     jQuery(function() { Search.loadIndex("{{ pathto('searchindex.js', 1) }}"); });
   </script>
   {{ super() }}
 {% endblock %}
+
+
 {% block body %}
   <h1 id="search-documentation">{{ _('Search') }}</h1>
   <div id="fallback" class="admonition warning">
@@ -42,7 +36,7 @@
     containing fewer words won't appear in the result list.{% endtrans %}
   </p>
   <form action="" method="get">
-    <input type="text" name="q" value="" />
+    <input type="text" name="q" value="" id="search-page-input-text"/>
     <input type="submit" value="{{ _('search') }}" />
     <span id="search-progress" style="padding-left: 10px"></span>
   </form>
