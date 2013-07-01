@@ -239,6 +239,12 @@ class StandaloneHTMLBuilder(sphinx.builders.html.StandaloneHTMLBuilder):
     def get_doc_context(self, docname, body, metatags):
         """Collect items for the template context of a page."""
 
+        shorttitle = self.globalcontext.get('shorttitle', '')
+        if shorttitle and shorttitle.endswith(' documentation'):
+            shorttitle = shorttitle[0:-14].rstrip()
+            self.globalcontext['shorttitle'] = shorttitle
+            
+
         if 0 and "hacking for typo3 ...":
             master_doc = self.globalcontext['master_doc']
             docstitle_from_settings = self.globalcontext['docstitle']
