@@ -45,7 +45,21 @@
 # http://installfont.berlios.de
 # http://fachschaft.physik.uni-greifswald.de/~stitch/ttf.html
 
-TEXMF=$(kpsewhich -expand-var \$TEXMFLOCAL)
+# Set INSTALL to 0 to locally convert only
+INSTALL=1
+
+if [ $INSTALL -eq 1 ]; then
+	TEXMF=$(kpsewhich -expand-var \$TEXMFLOCAL)
+	SUDO_CP="sudo cp"
+	SUDO_MKDIR="sudo mkdir"
+	SUDO_RM="sudo rm"
+else
+	TEXMF="./texmf"
+	SUDO_CP="cp"
+	SUDO_MKDIR="mkdir"
+	SUDO_RM="rm"
+	rm -rf $TEXMF
+fi
 FONTFOUNDRY="typo3"
 FONTNAME="share"
 FONTFAMILY="typo3share"
@@ -58,71 +72,76 @@ MAP="${TEXMF}/fonts/map/dvips/${FONTNAME}"
 TFM="${TEXMF}/fonts/tfm/${FONTFOUNDRY}/${FONTNAME}"
 TTF="${TEXMF}/fonts/truetype/${FONTFOUNDRY}/${FONTNAME}"
 
-# Check for ttf files in current dir.
-if [ ! -e *.ttf ]; then
-  echo "No Truetype fonts (*.ttf) found in current dir (${PWD})."
-  echo "Please put following TYPO3 font files into this directory:"
-  echo "- Share-Bold.ttf"
-  echo "- Share-BoldItalic.ttf"
-  echo "- Share-Italic.ttf"
-  echo "- Share-Regular.ttf"
-  echo "- Share-TechMono.ttf"
-  exit
+# Check for ttf files in current dir (Share-TechMono.ttf not yet supported)
+FONTS="Share-Bold.ttf Share-BoldItalic.ttf Share-Italic.ttf Share-Regular.ttf"
+MISSING_FONTS=""
+for f in $FONTS; do
+	if [ ! -e ./$f ]; then
+		MISSING_FONTS="$MISSING_FONTS $f"
+	fi
+done
+if [ ! -z "$MISSING_FONTS" ]; then
+	echo "No Truetype fonts (*.ttf) found in current dir (`pwd`)."
+	echo "Please put following TYPO3 font files into this directory:"
+	for f in $MISSING_FONTS; do
+		echo "- $f"
+	done
+	exit
 fi
 
 # Check for necessary tools.
 if [ $(which ttf2afm | wc -l) -lt 1 ]; then
-  echo "ttf2afm is not available."
-  exit
+	echo "ttf2afm is not available."
+	exit
 fi
 if [ $(which ttf2tfm | wc -l) -lt 1 ]; then
-  echo "ttf2tfm is not available."
-  exit
+	echo "ttf2tfm is not available."
+	exit
 fi
 if [ $(which vptovf | wc -l) -lt 1 ]; then
-  echo "vptovf is not available."
-  exit
+	echo "vptovf is not available."
+	exit
 fi
 
-echo "*** Creating directories (if neccessary)."
+echo "*** Creating directories (if necessary)."
 echo -n "${FD} "
 if [ ! -d ${FD} ]; then
-  sudo mkdir -p ${FD}
-  echo "created."
+	$SUDO_MKDIR -p ${FD}
+	echo "created."
 else
-  echo "exists."
+	echo "exists."
 fi
 echo -n "${MAP} "
 if [ ! -d ${MAP} ]; then
-  sudo mkdir -p ${MAP}
-  echo "created."
+	$SUDO_MKDIR -p ${MAP}
+	echo "created."
 else
-  echo "exists."
+	echo "exists."
 fi
 echo -n "${TFM} "
 if [ ! -d ${TFM} ]; then
-  sudo mkdir -p ${TFM}
-  echo "created."
+	$SUDO_MKDIR -p ${TFM}
+	echo "created."
 else
-  echo "exists."
+	echo "exists."
 fi
 echo -n "${TTF} "
 if [ ! -d ${TTF} ]; then
-  sudo mkdir -p ${TTF}
-  echo "created."
+	$SUDO_MKDIR -p ${TTF}
+	echo "created."
 else
-  echo "exists."
+	echo "exists."
 fi
 
 echo "*** Deleting old files (.tfm, .ttf, .fd, .map)."
 if [ -f ${FD}/${FONTDEFENC}${FONTFAMILY}.fd ]; then
-  sudo rm -f ${FD}/${FONTDEFENC}${FONTFAMILY}.fd
+	$SUDO_RM -f ${FD}/${FONTDEFENC}${FONTFAMILY}.fd
 fi
 if [ -f ${MAP}/${FONTNAME}.map ]; then
-  sudo rm -f ${MAP}/${FONTNAME}.map
+	$SUDO_RM -f ${MAP}/${FONTNAME}.map
 fi
-sudo rm -f ${TFM}/*
-sudo rm -f ${TTF}/*
+$SUDO_RM -f ${TFM}/*
+$SUDO_RM -f ${TTF}/*
 
 # Create a working directory.
 TEMPDIR="/tmp/"`basename ${0}`"-"$(date +%Y%m%d-%H%M%S)
@@ -131,66 +150,66 @@ mkdir ${TEMPDIR}
 
 # Rename the font files according to the Karl-Berry-Scheme.
 echo "*** Renaming the truetype font files (.ttf) according to the Karl-Berry-scheme."
-for FONTFILE in *.ttf; do
-  #FONTWEIGHT="r"
-  #WEIGHT=$(ttf2afm ${FONTFILE} 2>/dev/null | grep -ie "^weight[[:space:]]" | cut -d" " -f2)
-  #if [ ${WEIGHT} = "Normal" -o ${WEIGHT} = "normal" ]; then
-  #  FONTWEIGHT="r"
-  #fi
-  #if [ ${WEIGHT} = "Bold" -o ${WEIGHT} = "bold" ]; then
-  #  FONTWEIGHT="b"
-  #fi
-  if [ "$FONTFILE" == "Share-Bold.ttf" -o "$FONTFILE" == "Share-BoldItalic.ttf" ]; then
-    FONTWEIGHT="b"
-  else
-    FONTWEIGHT="r"
-  fi
+for FONTFILE in $FONTS; do
+	#FONTWEIGHT="r"
+	#WEIGHT=$(ttf2afm ${FONTFILE} 2>/dev/null | grep -ie "^weight[[:space:]]" | cut -d" " -f2)
+	#if [ ${WEIGHT} = "Normal" -o ${WEIGHT} = "normal" ]; then
+	#	FONTWEIGHT="r"
+	#fi
+	#if [ ${WEIGHT} = "Bold" -o ${WEIGHT} = "bold" ]; then
+	#	FONTWEIGHT="b"
+	#fi
+	if [ "$FONTFILE" == "Share-Bold.ttf" -o "$FONTFILE" == "Share-BoldItalic.ttf" ]; then
+		FONTWEIGHT="b"
+	else
+		FONTWEIGHT="r"
+	fi
 
-  #ANGLE=$(ttf2afm ${FONTFILE} 2>/dev/null | grep -ie "italicangle[[:space:]]" | cut -d" " -f2)
-  #if [ ${ANGLE} -lt 0 -o ${ANGLE} -gt 0 ]; then
-    #FONTANGLE="i"
-  #else
-    #FONTANGLE=""
-  #fi
-  if [ "$FONTFILE" == "Share-Italic.ttf" -o "$FONTFILE" == "Share-BoldItalic.ttf" ]; then
-    FONTANGLE="i"
-  else
-    FONTANGLE=""
-  fi
+	#ANGLE=$(ttf2afm ${FONTFILE} 2>/dev/null | grep -ie "italicangle[[:space:]]" | cut -d" " -f2)
+	#if [ ${ANGLE} -lt 0 -o ${ANGLE} -gt 0 ]; then
+		#FONTANGLE="i"
+	#else
+		#FONTANGLE=""
+	#fi
+	if [ "$FONTFILE" == "Share-Italic.ttf" -o "$FONTFILE" == "Share-BoldItalic.ttf" ]; then
+		FONTANGLE="i"
+	else
+		FONTANGLE=""
+	fi
 
-  # Create an oblique font for every non-italic font file.
-  if [ -z ${FONTANGLE} ]; then
-    FONTFILENAME="${FONTFAMILY}${FONTWEIGHT}o"
-    echo "${FONTFILE} ${TEMPDIR}/${FONTFILENAME}.ttf";
-    cp "${FONTFILE}" ${TEMPDIR}/${FONTFILENAME}.ttf;
-  fi
+	# Create an oblique font for every non-italic font file.
+	if [ -z ${FONTANGLE} ]; then
+		FONTFILENAME="${FONTFAMILY}${FONTWEIGHT}o"
+		echo "${FONTFILE} ${TEMPDIR}/${FONTFILENAME}.ttf";
+		cp "${FONTFILE}" ${TEMPDIR}/${FONTFILENAME}.ttf;
+	fi
 
-  FONTFILENAME="${FONTFAMILY}${FONTWEIGHT}${FONTANGLE}"
-  echo "${FONTFILE} ${TEMPDIR}/${FONTFILENAME}.ttf";
-  cp "${FONTFILE}" ${TEMPDIR}/${FONTFILENAME}.ttf;
+	FONTFILENAME="${FONTFAMILY}${FONTWEIGHT}${FONTANGLE}"
+	echo "${FONTFILE} ${TEMPDIR}/${FONTFILENAME}.ttf";
+	cp "${FONTFILE}" ${TEMPDIR}/${FONTFILENAME}.ttf;
 done
-cd ${TEMPDIR}
+pushd ${TEMPDIR} >/dev/null
 
 echo "*** Creating font mapping (.map)."
 for FONTFILE in *.ttf; do
-  FONT=${FONTFILE%%.*}
-  NAME=$(ttf2afm ${FONTFILE} 2>/dev/null | grep -ie "^fontname[[:space:]]" | cut -d" " -f2)
-  if [ ${FONT:(-1)} = "o" ]; then
-    FONTSLANT="\" .167 SlantFont T1Encoding ReEncodeFont \" "
-    SLANT="Oblique"
-  fi
-  echo "*** Creating TeX font metrics (.tfm) for ${FONTFILE} (${NAME}${SLANT}) (see ${FONT}.log)."
-  ttf2tfm ${FONT}.ttf -q -T ${FONTENCFILE} -v ${FONT}${FONTENC}.vpl ${FONT}${FONTENC}.tfm 2>${FONT}.log
-  vptovf ${FONT}${FONTENC}.vpl ${FONT}${FONTENC}.vf ${FONT}${FONTENC}.tfm
-  FONTSLANT=""
-  SLANT=""
-  echo "${FONT}${FONTENC} ${NAME}${SLANT} ${FONTSLANT}<${FONT}.ttf <${FONTENCFILE}" >> ${FONTNAME}.map;
-  rm ${FONT}${FONTENC}.vpl
-  rm ${FONT}${FONTENC}.vf
+	FONT=${FONTFILE%%.*}
+	NAME=$(ttf2afm ${FONTFILE} 2>/dev/null | grep -ie "^fontname[[:space:]]" | cut -d" " -f2)
+	if [ ${FONT:(-1)} = "o" ]; then
+		FONTSLANT="\" .167 SlantFont T1Encoding ReEncodeFont \" "
+		SLANT="Oblique"
+	fi
+	echo "*** Creating TeX font metrics (.tfm) for ${FONTFILE} (${NAME}${SLANT}) (see ${FONT}.log)."
+	ttf2tfm ${FONT}.ttf -q -T ${FONTENCFILE} -v ${FONT}${FONTENC}.vpl ${FONT}${FONTENC}.tfm 2>${FONT}.log
+	vptovf ${FONT}${FONTENC}.vpl ${FONT}${FONTENC}.vf ${FONT}${FONTENC}.tfm
+	FONTSLANT=""
+	SLANT=""
+	echo "${FONT}${FONTENC} ${NAME}${SLANT} ${FONTSLANT}<${FONT}.ttf <${FONTENCFILE}" >> ${FONTNAME}.map;
+	rm ${FONT}${FONTENC}.vpl
+	rm ${FONT}${FONTENC}.vf
 done
 
 echo "*** Creating font description (.fd)."
-cat >${FONTDEFENC}${FONTFAMILY}.fd <<EOF
+cat >${FONTDEFENC}${FONTFAMILY}.fd <<EOT
 \ProvidesFile{${FONTDEFENC}${FONTFAMILY}.fd}[Font definitions for T1/${FONTFAMILY}.]
 
 \DeclareFontFamily{T1}{${FONTFAMILY}}{}
@@ -213,18 +232,23 @@ cat >${FONTDEFENC}${FONTFAMILY}.fd <<EOF
 \DeclareFontShape{T1}{${FONTFAMILY}}{bx}{it}{<->ssub * ${FONTFAMILY}/b/it}{}
 
 \endinput
-EOF
+EOT
+
+popd >/dev/null
 
 echo "*** Copying files (.ttf, .fd, .map, .tfm)."
-sudo cp ${FONTDEFENC}${FONTFAMILY}.fd ${FD}
-sudo cp ${FONTNAME}.map ${MAP}
-sudo cp ${FONTFAMILY}*.tfm ${TFM}
-sudo cp ${FONTFAMILY}*.ttf ${TTF}
+$SUDO_CP $TEMPDIR/${FONTDEFENC}${FONTFAMILY}.fd ${FD}
+$SUDO_CP $TEMPDIR/${FONTNAME}.map ${MAP}
+$SUDO_CP $TEMPDIR/${FONTFAMILY}*.tfm ${TFM}
+$SUDO_CP $TEMPDIR/${FONTFAMILY}*.ttf ${TTF}
 
-echo "*** Updating TeX filename database."
-sudo texhash ${TEXFM}
+rm -rf $TEMPDIR
 
-echo "*** Registering font mapping."
-sudo updmap-sys --enable Map=${FONTNAME}.map
-echo "*** Finished. The truetype font ${FONTNAME} is now available as ${FONTFAMILY} in LaTeX."
+if [ $INSTALL -eq 1 ]; then
+	echo "*** Updating TeX filename database."
+	sudo texhash ${TEXFM}
+	echo "*** Registering font mapping."
+	sudo updmap-sys --enable Map=${FONTNAME}.map
+fi
+echo "*** Finished. The truetype font \"${FONTNAME}\" is now available as \"${FONTFAMILY}\" in LaTeX."
 
