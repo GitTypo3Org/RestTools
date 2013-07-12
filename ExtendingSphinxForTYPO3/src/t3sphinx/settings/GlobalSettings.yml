@@ -36,6 +36,10 @@ conf.py:
     - http://docs.typo3.org/TYPO3/EditorsTutorial
     - null
 
+    t3extbase:
+    - http://docs.typo3.org/typo3cms/ExtbaseGuide
+    - null
+
     t3extbasebook:
     - http://docs.typo3.org/typo3cms/ExtbaseFluidBook/
     - null
