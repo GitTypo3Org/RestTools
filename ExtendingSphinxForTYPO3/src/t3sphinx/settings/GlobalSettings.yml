@@ -105,9 +105,12 @@ conf.py:
     - null
 
   highlight_language: 'php'
+
   # html_theme: typo3sphinx
   html_theme: t3org
   # html_theme: typo3
 
+  # pygments_style: sphinx
+  pygments_style: friendly
 
 ...
