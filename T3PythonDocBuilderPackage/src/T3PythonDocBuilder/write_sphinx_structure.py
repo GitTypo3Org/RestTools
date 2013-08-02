@@ -1,5 +1,5 @@
 # write_sphinx_structure.py
-# mb, 2012-05-21, 2012-06-01
+# mb, 2012-05-21, 2013-08-02
 
 # mostly a cruel hack ...
 
@@ -105,7 +105,7 @@ class DocumentationMaker:
 
                 # destination file name
                 v2 = D[k2][1]
-                v2 = v2.replace('[', '-')            
+                v2 = v2.replace('[', '-')
                 v2 = v2.replace(']', '')
                 relpath1.append(k2.strip('-'))
                 relpath2.append(v2)
@@ -119,7 +119,7 @@ class DocumentationMaker:
             else:
                 sublevels = len(relpath2)
 
-            relpath1 = relpath1[:-1]    
+            relpath1 = relpath1[:-1]
             relpath1= '/'.join(relpath1)
             relpath2= '/'.join(relpath2)
             if not capitalize:
@@ -167,7 +167,7 @@ class DocumentationMaker:
 
         listOfOldNew = self.makeListOfOldNew(D, capitalize)
 
-                 
+
         if 1 and 'copy':
 
             # copy source files to their new destinations
@@ -197,7 +197,7 @@ class DocumentationMaker:
                     print f2path
 
                 parts = relpath2.split('/')
-                
+
                 skiptherest = False
                 skipblock = False
                 for line in f1:
@@ -250,7 +250,7 @@ class DocumentationMaker:
                     del data
                     if verbose:
                         print usedimages
-                
+
                 if 1:
                     if usedimages:
                         src = ospj(srcdir, fnameimages)
@@ -348,7 +348,8 @@ class DocumentationMaker:
         if subdir:
             srcImages = ospj(self.arg.f2path_documentation, 'Images')
             destImages = ospj(self.arg.f2path_documentation, subdir, 'Images')
-            os.rename(srcImages, destImages)
+            if os.path.exists(srcImages):
+                os.rename(srcImages, destImages)
 
         f1path = ospj(self.arg.f2path_documentation, 'Images.txt')
         if ospe(f1path):
@@ -359,8 +360,8 @@ class DocumentationMaker:
             f2 = codecs.open(f1path, 'w', 'utf-8-sig')
             f2.write(data)
             f2.close()
-            
-            
+
+
 
 
 def main(arg):

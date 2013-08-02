@@ -51,7 +51,7 @@ def tweakTableRow(lines):
     else:
         lines = []
         return lines
-    
+
 
     # check 2, manipulation: insert label and header
     p = SECTION_UNDERLINERS.index(CURRENT_UNDERLINER)

@@ -46,7 +46,7 @@ def main(f0path, f2path):
 
 if __name__ == "__main__":
     from sys import argv, exit
-    
+
     if len(argv) < 3 or len(argv) > 3:
         print "USAGE: python %s <input-file> <output-file>" % argv[0]
         exit(255)

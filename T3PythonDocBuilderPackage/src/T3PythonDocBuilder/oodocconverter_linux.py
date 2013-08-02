@@ -120,7 +120,7 @@ class DocumentConversionException(Exception):
 
 
 class DocumentConverter:
-    
+
     def __init__(self, port=DEFAULT_OPENOFFICE_PORT):
         localContext = uno.getComponentContext()
         resolver = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
@@ -139,7 +139,7 @@ class DocumentConverter:
         inputExt = self._getFileExt(inputFile)
         if IMPORT_FILTER_MAP.has_key(inputExt):
             loadProperties.update(IMPORT_FILTER_MAP[inputExt])
-        
+
         document = self.desktop.loadComponentFromURL(inputUrl, "_blank", 0, self._toProperties(loadProperties))
         try:
             document.refresh()
@@ -148,7 +148,7 @@ class DocumentConverter:
 
         family = self._detectFamily(document)
         self._overridePageStyleProperties(document, family)
-        
+
         outputExt = self._getFileExt(outputFile)
         storeProperties = self._getStoreProperties(document, outputExt)
 
@@ -176,7 +176,7 @@ class DocumentConverter:
             return propertiesByFamily[family]
         except KeyError:
             raise DocumentConversionException, "unsupported conversion: from '%s' to '%s'" % (family, outputExt)
-    
+
     def _detectFamily(self, document):
         if document.supportsService("com.sun.star.text.WebDocument"):
             return FAMILY_WEB
@@ -211,7 +211,7 @@ class DocumentConverter:
 
 if __name__ == "__main__":
     from sys import argv, exit
-    
+
     if len(argv) < 3:
         print "USAGE: python %s <input-file> <output-file>" % argv[0]
         exit(255)
@@ -220,7 +220,7 @@ if __name__ == "__main__":
         exit(1)
 
     try:
-        converter = DocumentConverter()    
+        converter = DocumentConverter()
         converter.convert(argv[1], argv[2])
     except DocumentConversionException, exception:
         print "ERROR! " + str(exception)

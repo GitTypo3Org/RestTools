@@ -44,7 +44,7 @@ def keepOrDropFirstRow(lines):
     if drop and not name:
         lines = []
     return lines
-        
+
 
 
 
@@ -65,7 +65,7 @@ def processRstFile(f1path):
                     state = 'within'
                 else:
                     f2.write(line)
-                    
+
             elif state == 'within':
                 if line.startswith(indentStr + ' - '):
                     state = 'atNextRow'
@@ -77,7 +77,7 @@ def processRstFile(f1path):
                     withinT3FieldListTable = False
                 else:
                     lines.append(line)
-                    
+
         else:
             m = re.match('([ ]*)(\.\. t3-field-list-table::)(.*)', line)
             if m:

@@ -260,7 +260,7 @@ class DataCollector(object):
             self.stop_tr = self.stop_tr_AndWrite_field_list_table
             self.stop_th = self.stop_th_AndWrite_field_list_table
             self.stop_td = self.stop_td_AndWrite_field_list_table
-        
+
 
     def push(self):
         self.stack.append((self.current_datahandler, self.sbuf))
@@ -1249,7 +1249,7 @@ class MyHTMLParser(HTMLParser.HTMLParser):
         self.tablesas = tablesas
         self.taglevel = 0
         self.tagstack = []
-     
+
         self.datacollector = DataCollector(parent=self, taginfo=taginfo, tablesas=tablesas)
         self.do_we_expect_data = [False]
         self.handled_tags_log = {}
@@ -1739,7 +1739,7 @@ def main(f1name, f2name, f3name=None, f4name=None, appendlog=0, taginfo=0, table
         f1name = 'temp-urlretrieved.html'
         urllib.urlretrieve(url, f1name)
         urllib.urlcleanup()
-        
+
     if f1 is None:
         f1encoding, xmlDeclarationFound = searchFileEncoding(f1name)
         f1 = codecs.open(f1name, 'r', f1encoding)

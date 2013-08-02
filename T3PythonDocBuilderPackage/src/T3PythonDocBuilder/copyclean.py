@@ -93,7 +93,7 @@ def main(f1name, f2name):
     if f2name != '-':
         f2.close()
 
-    return      
+    return
 
 
 def get_argparse_args():
@@ -125,7 +125,7 @@ class Namespace(object):
     def __init__(self, **kwargs):
         for name in kwargs:
             setattr(self, name, kwargs[name])
-   
+
 
 if __name__=="__main__":
     argparse_available = False

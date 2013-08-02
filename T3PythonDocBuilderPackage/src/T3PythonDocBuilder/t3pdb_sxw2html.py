@@ -28,6 +28,13 @@ Example
 
 import os
 import sys
+try:
+    import PIL
+    from PIL import Image
+    PIL_is_available = True
+except ImportError:
+    PIL_is_available = False
+
 
 # testing
 if 0 and 'pywin' in sys.modules:
@@ -125,12 +132,12 @@ def convertsxw2html(srcfile, destfile):
                 retCode, msg = 2, "ERROR2! " % str(exception)
             except Exception, msg:
                 retCode, msg = 2, "ERROR9! " + str(msg)
-            
+
         else:
             retCode, msg = (2,
                             "'OpenOffice headless for Linux' is not "
                             "available. Cannot convert '%s' to '%s'" %
-                            (srcfile, destfile)) 
+                            (srcfile, destfile))
         return retCode, msg
 
     elif platformIsWindows():
@@ -158,7 +165,7 @@ class Main:
     def __init__(self, args):
         self.args = args
         self.tempdirname = 't3pdb'
-        
+
         # where do we have our resources?
         self.resdir = 'resources'
 
@@ -186,7 +193,7 @@ class Main:
         self.f2path_rst = ospj(self.safetempdir, self.f2stem + '.rst')
         self.f2path_rst_temp = ospj(self.safetempdir, self.f2stem + '-temp.rst')
         self.safetempdir_sliced = ospj(self.safetempdir, '_sliced')
-        self.f2path_documentation = ospj(self.safetempdir, 'Documentation')        
+        self.f2path_documentation = ospj(self.safetempdir, 'Documentation')
 
         # logfiles
         self.f2path_tidy_error_log = ospj(self.logdir, self.f2name + '.tidy-error-log.txt')
@@ -198,12 +205,12 @@ class Main:
         self.usr_bin_python = 'python'
         self.t3docutils_stylesheet_path = 'http://docs.typo3.org/css/typo3_docutils_styles.css'
         self.t3rst2html_script = 't3rst2html.py'
-        self.t3docutils_template_path = 'resources/t3docutils_template.txt' 
+        self.t3docutils_template_path = 'resources/t3docutils_template.txt'
 
         self.rstfilepaths = []
 
 
-        
+
     def work(self):
         retCode = 0
         msg = ''
@@ -309,6 +316,27 @@ class Main:
             subprocess.call(cmd, shell=True)
 
 
+        if 1 and "convert *.gif to *.gif.png":
+            L = []
+            dirname = os.path.dirname(self.f2path)
+            for fname in os.listdir(dirname):
+                if fname.lower().startswith('manual_html_') and fname.lower().endswith('.gif'):
+                    L.append(fname)
+            if L:
+                for fname in L:
+                    gifFile = ospj(dirname, fname)
+                    im = PIL.Image.open(gifFile)
+                    pngFile = gifFile + '.png'
+                    im.save(pngFile)
+                f1 = file(self.f2path)
+                data = f1.read()
+                f1.close()
+                for fname in L:
+                    data = data.replace(fname, fname + '.png')
+                f2 = file(self.f2path, "w")
+                f2.write(data)
+                f2.close()
+
         if 1:
             try:
                 copyclean.main(self.f2path, self.f2path_cleaned)
@@ -326,7 +354,7 @@ class Main:
             retCode = subprocess.call(cmd, shell=True)
             if not ospe(self.f2path_from_tidy):
                 retCode, msg = (1,
-                                "Cannot create '%s'" % 
+                                "Cannot create '%s'" %
                                 self.f2path_from_tidy)
 
 
@@ -407,8 +435,8 @@ class Main:
                 arg.stdout_log = ospj(self.logdir, arg.basename_generic + '.t3rst2html-stdout.txt')
                 arg.stderr_log = ospj(self.logdir, arg.basename_generic + '.t3rst2html-stderr-log.txt')
                 # errors = 'strict', 'replace', 'ignore', 'xmlcharrefreplace', 'backslashreplace'
-                f2stdout = codecs.open(arg.stdout_log, 'w', 'utf-8', errors='backslashreplace') 
-                f2stderr = codecs.open(arg.stderr_log, 'w', 'utf-8', errors='backslashreplace') 
+                f2stdout = codecs.open(arg.stdout_log, 'w', 'utf-8', errors='backslashreplace')
+                f2stderr = codecs.open(arg.stderr_log, 'w', 'utf-8', errors='backslashreplace')
                 # devnull = file('/dev/null', 'w')
                 returncode = subprocess.call(cmd, stdout=f2stdout, stderr=f2stderr, shell=True)
                 f2stderr.close()
@@ -447,7 +475,7 @@ class Main:
 
         ## ####
         ## Ah, oh, uh, this was a silly idea. Forget it.
-        ## 
+        ##
         ## # travel all *.rst files in ./Documentation and
         ## # try to check whether the first row of a .. t3-field-list-table::
         ## # should be removed. If so do so.
@@ -501,6 +529,9 @@ def get_argparse_args():
 
 
 if __name__=="__main__":
+
+    if 0 and "fake arguments":
+        sys.argv = sys.argv[0:1] + ['temp/manual.sxw', 'temp']
 
     argparse_available = False
     try:

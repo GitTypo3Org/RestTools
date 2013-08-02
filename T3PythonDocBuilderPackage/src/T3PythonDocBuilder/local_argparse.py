@@ -1607,7 +1607,7 @@ class ArgumentParser(_AttributeHolder, _ActionsContainer):
 
         # add parent arguments and defaults
         for parent in parents:
-            
+
             self._add_container_actions(parent)
             try:
                 defaults = parent._defaults

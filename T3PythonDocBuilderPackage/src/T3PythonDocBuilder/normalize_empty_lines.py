@@ -31,7 +31,7 @@ def main(f1name, f2name, maxemptylines=None):
             else:
                 if cnt < maxemptylines:
                     cnt += 1
-                    
+
     if not f2 == sys.stdout:
         f2.close()
 
@@ -39,7 +39,7 @@ def main(f1name, f2name, maxemptylines=None):
 if __name__ == "__main__":
 
     if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print 'usage: python %s <infile.utf8.rst.txt> [<outfile.utf8.rst.txt>]' % sys.argv[0]# 
+        print 'usage: python %s <infile.utf8.rst.txt> [<outfile.utf8.rst.txt>]' % sys.argv[0]#
         print '       Normalize maximum number of empty line following immediately'
         print '       upon each other. Number is: %s' % MAX_EMPTY_LINES
         sys.exit(2)
