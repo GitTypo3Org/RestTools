@@ -17,6 +17,21 @@
 % Share font family does not support ligatures
 \DisableLigatures{encoding = *, family = typo3share}
 
+% Make some special characters work
+\DeclareUnicodeCharacter{2264}{$\leq$} % ≤
+\DeclareUnicodeCharacter{2265}{$\geq$} % ≥
+
+\IfFileExists{mathabx}{%
+	\RequirePackage{mathabx}%
+	\DeclareUnicodeCharacter{23CE}{$\dlsh$} % ⏎
+}{%
+	\PackageWarning{typo3}{%
+		Package mathabx not available, therefore\MessageBreak
+		substituting command dlsh for carriage return symbol\MessageBreak
+	}%
+	\DeclareUnicodeCharacter{23CE}{\P} % ¶
+}
+
 % --------------------------------------------
 % Override configuration from sphinx.sty
 % --------------------------------------------
