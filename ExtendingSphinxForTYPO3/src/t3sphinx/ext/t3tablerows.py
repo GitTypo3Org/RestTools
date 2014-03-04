@@ -15,7 +15,7 @@ emit_info = 0
 
 good_term_combinations = [
     # (0, '10', [                                                ]),
-    # (0, '11', ['property'                                      ]),
+      (0, '11', ['property'                                      ]),
     # (0, '12', [            'datatype',                         ]),
       (0, '13', ['property', 'datatype',                         ]),
     # (0, '14', [                        'description',          ]),
@@ -66,14 +66,14 @@ good_term_combinations = [
       (0, '3f', ['var', 'phptype', 'description', 'default']),
 
     # (0, '40', [                                         ]),
-    # (0, '41', ['key',                                   ]),
-    # (0, '42', [       'datatype',                       ]),
+      (0, '41', ['key',                                   ]),
+      (0, '42', [       'datatype',                       ]),
       (0, '43', ['key', 'datatype',                       ]),
-    # (0, '44', [                   'description',        ]),
+      (0, '44', [                   'description',        ]),
       (0, '45', ['key',             'description',        ]),
       (0, '46', [       'datatype', 'description',        ]),
       (0, '47', ['key', 'datatype', 'description',        ]),
-    # (0, '48', [                                  'scope']),
+      (0, '48', [                                  'scope']),
       (0, '49', ['key',                            'scope']),
       (0, '4a', [       'datatype',                'scope']),
       (0, '4b', ['key', 'datatype',                'scope']),
@@ -81,6 +81,25 @@ good_term_combinations = [
       (0, '4d', ['key',             'description', 'scope']),
       (0, '4e', [       'datatype', 'description', 'scope']),
       (0, '4f', ['key', 'datatype', 'description', 'scope']),
+      (0, '50', ['section', 'description'                 ]),
+      (0, '51', ['uid_local', 'uid_foreign', 'tablename', 'sorting']),
+      (0, '52', ['int.type', 'indatabase', 'whengiventotceforms']),
+      (0, '53', ['currentdbvalue', 'submitteddatafromtceforms', 'newdbvalue', 'processingdone']),
+      (0, '54', ['element', 'description', 'childelements']),
+      (0, '55', ['keyword', 'description'                           ]),
+      (0, '56', ['keyword', 'description', 'valuesyntax'            ]),
+      (0, '57', ['keyword', 'description', 'valuesyntax', 'examples']),
+      (0, '58', ['softrefkey', 'description']),
+      (0, '59', ['key', 'type', 'description']),
+      (0, '5a', ['int.pointer', 'title', 'description']),
+      (0, '5b', ['fieldname', '5thparam', "'colorscheme'pnt", "'stylescheme'pnt", "'borderscheme'pnt"]),
+      (0, '5c', ['element', 'format', 'description']),
+      (0, '5d', ['key', 'subkeys', 'description']),
+      (0, '5e', ['key', 'type', 'description']),
+      (0, '5f', ['variable', 'phptype', 'description'           ]),
+      (0, '60', ['variable', 'phptype', 'description', 'default']),
+      (0, '61', ['directory', 'description' ]),
+      (0, '62', ['name', 'description' ]),
 
     ]
 
@@ -95,6 +114,10 @@ def checkCombinationOfTerms(terms):
         if terms == L:
             found = True
             break
+    if 0 and not found:
+        f2 = file('temp.txt', 'a')
+        f2.write('%s\n' % terms)
+        f2.close()
     return rowtype, rowid, found
 
 def transform_definition_list(dl, app, docname=''):
