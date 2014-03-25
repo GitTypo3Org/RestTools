@@ -22,19 +22,19 @@ conf.py:
   intersphinx_mapping:
 
     t3maintenance:
-    - http://docs.typo3.org/TYPO3/MaintenanceGuide
+    - http://docs.typo3.org/typo3cms/MaintenanceGuide
     - null
 
     t3api:
-    - http://docs.typo3.org/TYPO3/CoreApiReference
+    - http://docs.typo3.org/typo3cms/CoreApiReference
     - null
 
     t3cgl:
-    - http://docs.typo3.org/TYPO3/CodingGuidelinesReference
+    - http://docs.typo3.org/typo3cms/CodingGuidelinesReference
     - null
 
     t3editors:
-    - http://docs.typo3.org/TYPO3/EditorsTutorial
+    - http://docs.typo3.org/typo3cms/EditorsTutorial
     - null
 
     t3extbase:
