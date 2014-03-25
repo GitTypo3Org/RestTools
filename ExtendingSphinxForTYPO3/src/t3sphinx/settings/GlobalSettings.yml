@@ -8,8 +8,6 @@ conf.py:
   - sphinx.ext.extlinks
   - sphinx.ext.ifconfig
   - sphinx.ext.intersphinx
-  - sphinx.ext.todo
-  - sphinx.ext.graphviz
   - t3sphinx.ext.t3extras
   - t3sphinx.ext.t3tablerows
   - t3sphinx.ext.targets
