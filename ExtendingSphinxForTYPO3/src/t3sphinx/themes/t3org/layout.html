@@ -100,13 +100,22 @@
 			<li>
 				<a href="{{ pathto(master_doc) }}" title="{{ shorttitle|e }}">Docstart</a>
 			</li>
-			{%- if show_source and has_source and sourcename %}	
+			{%- if show_source and has_source and sourcename %}
 				{%- block liShowSource %}
 				<li>
 					<a href="{{ pathto('_sources/' + sourcename, true)|e }}" rel="nofollow">
 						{{ _('Show Source') }}
 					</a>
 				</li>
+
+				{% if theme_github_repository and theme_github_branch %}
+				<li>
+					<a href="https://github.com/{{ theme_github_repository|e }}/edit/{{ theme_github_branch|e }}/Documentation/{{ sourcename|replace(".txt", ".rst")|e }}">
+						Edit me on Github
+					</a>
+				</li>
+				{% endif %}
+
 				{%- endblock %}
 				{%- for rellink in rellinks %}
 				<li>
