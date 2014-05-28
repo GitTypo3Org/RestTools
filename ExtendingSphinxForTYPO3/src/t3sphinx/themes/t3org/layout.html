@@ -107,21 +107,19 @@
 						{{ _('Show Source') }}
 					</a>
 				</li>
-
-				{% if theme_github_repository and theme_github_branch %}
-				<li>
-					<a href="https://github.com/{{ theme_github_repository|e }}/edit/{{ theme_github_branch|e }}/Documentation/{{ sourcename|replace(".txt", ".rst")|e }}">
-						Edit me on Github
-					</a>
-				</li>
-				{% endif %}
-
 				{%- endblock %}
 				{%- for rellink in rellinks %}
 				<li>
 					<a href="{{ pathto(rellink[0]) }}" title="{{ rellink[1]|striptags|e }}" {{ accesskey(rellink[2]) }}>{{ rellink[3] }}</a>
 				</li>
 				{%- endfor %}
+				{% if theme_github_repository and theme_github_branch %}
+				<li class="nav-edit">
+					<a href="https://github.com/{{ theme_github_repository|e }}/edit/{{ theme_github_branch|e }}/Documentation/{{ sourcename|replace(".txt", ".rst")|e }}">
+						Edit me on Github
+					</a>
+				</li>
+				{% endif %}
 			{%- endif %}
 		</ul>
 	</div>
