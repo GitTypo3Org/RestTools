@@ -2,7 +2,29 @@
 
 ---
 conf.py:
+
+  project: Project Name
+  copyright: 1970-2099
+  version: 0.0
+  release: 0.0.0
+
+  highlight_language: none
+  html_theme: t3org
+  master_doc: Index
+  pygments_style: friendly
   today_fmt: '%Y-%m-%d %H:%M'
+
+  latex_documents:
+  - - Index
+    - manual.tex
+    - Title of Manual
+    - Author
+    - manual
+
+  latex_elements:
+    papersize: a4paper
+    pointsize: 10pt
+    preamble: \usepackage{typo3}
 
   extensions:
   - sphinx.ext.extlinks
@@ -17,7 +39,9 @@ conf.py:
     - https://forge.typo3.org/issues/%s
     - 'forge: '
 
-  intersphinx_mapping:
+  intersphinx_mapping: {}
+
+  intersphinx_mapping_RECOMMENDED:
 
     t3maintenance:
     - http://docs.typo3.org/typo3cms/MaintenanceGuide
@@ -102,14 +126,5 @@ conf.py:
     t3tssyntax:
     - http://docs.typo3.org/typo3cms/TyposcriptSyntaxReference
     - null
-
-  highlight_language: none
-
-  # html_theme: typo3sphinx
-  html_theme: t3org
-  # html_theme: typo3
-
-  # pygments_style: sphinx
-  pygments_style: friendly
 
 ...
