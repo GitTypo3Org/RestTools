@@ -14,14 +14,17 @@ conf.py:
   pygments_style: friendly
   today_fmt: '%Y-%m-%d %H:%M'
 
-  latex_documents:
+  latex_documents: []
+  latex_elements: []
+
+  latex_documents_EXAMPLE:
   - - Index
-    - manual.tex
-    - Title of Manual
-    - Author
+    - extension-key.tex
+    - Title of the manual
+    - Name of the author
     - manual
 
-  latex_elements:
+  latex_elements_EXAMPLE:
     papersize: a4paper
     pointsize: 10pt
     preamble: \usepackage{typo3}
