@@ -15,7 +15,7 @@ conf.py:
   today_fmt: '%Y-%m-%d %H:%M'
 
   latex_documents: []
-  latex_elements: []
+  latex_elements: {}
 
   latex_documents_EXAMPLE:
   - - Index
