@@ -5,7 +5,7 @@ Sphinx project. See http://sphinx.pocoo.org/
 The Sphinx license is of BSD style - see below.
 
 Additionally fonts, images and styles of the TYPO3 website
-are being used. See http://preview.typo3.org/about/licenses/
+are being used. See http://typo3.org/about/licenses/
 
 ----------------------------------------------------------------------
 
