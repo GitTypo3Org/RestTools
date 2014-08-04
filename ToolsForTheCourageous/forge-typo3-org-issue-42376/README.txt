@@ -6,7 +6,7 @@ Copy this script to folder "./Documentation/" and
 run it from there without any arguments. If will
 only work if there is a file "./Documentation/Index.rst".
 
-See http://forge.typo3.org/issues/42376 for what it does.
+See https://forge.typo3.org/issues/42376 for what it does.
 
 It will:
 
