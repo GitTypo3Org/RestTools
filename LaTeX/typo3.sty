@@ -36,7 +36,29 @@
 % Override configuration from sphinx.sty
 % --------------------------------------------
 
+\definecolor{typo3orange}{RGB}{255, 135, 0}
+
+% Set headline colors
+% Hugh chapter headlines in orange (see \ChTitleVar below),
+% all other, low-level headlines in black is also what t3o uses.
+\definecolor{TitleColor}{RGB}{0, 0, 0}
+
+% Set link colors
+\definecolor{OuterLinkColor}{RGB}{255, 135, 0}
+\definecolor{InnerLinkColor}{RGB}{255, 135, 0}
+\hypersetup{
+	linkcolor=typo3orange,		% Normal links, also internal links
+	citecolor=typo3orange,		% color of links to bibliography
+	filecolor=typo3orange,		% color of file links
+	urlcolor=typo3orange,		% Web URLs, E-Mail addresses
+}
+% Note that the central cron_rebuild.sh file contains a special rule
+% to change the links to black for the \tableofcontents.
+
 \renewcommand{\py@HeaderFamily}{\sharefont\bfseries}
+
+% Color of hugh chapter headlines (chapter headlines are the big main headlines like INTRODUCTION)
+\ChTitleVar{\raggedleft \rm\Huge\py@HeaderFamily\color{typo3orange}}
 
 % Redefine the 'normal' header/footer style when using "fancyhdr" package:
 \@ifundefined{fancyhf}{}{
