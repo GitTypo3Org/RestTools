@@ -10,7 +10,6 @@ conf.py:
 
   highlight_language: none
   html_theme: t3org
-  master_doc: Index
   pygments_style: friendly
   today_fmt: '%Y-%m-%d %H:%M'
 
