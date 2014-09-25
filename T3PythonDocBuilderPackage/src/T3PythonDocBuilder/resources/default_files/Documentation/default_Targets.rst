@@ -5,7 +5,7 @@
 
 .. include:: Includes.txt
 
-.. only:: html
+.. only:: t3html
 
    Index: Labels for Cross-Referencing
    ===================================
