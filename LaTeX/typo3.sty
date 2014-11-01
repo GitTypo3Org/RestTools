@@ -155,4 +155,22 @@
 {%
   \lst@EndWriteFile% closes output file
 }
+
+% Override the includegraphics definition
+% to include higher resolution images
+\renewcommand\includegraphics[2][\@empty]{%
+  \ifx#1\@empty%
+    \setbox\image@box=\hbox{\py@Oldincludegraphics{#2}}%
+    \image@width\wd\image@box%
+    \ifdim .5\image@width>\linewidth%
+      \setbox\image@box=\hbox{\py@Oldincludegraphics[width=\linewidth]{#2}}%
+      \box\image@box%
+    \else%
+      \py@Oldincludegraphics[width=.5\image@width]{#2}
+    \fi%
+  \else%
+    \py@Oldincludegraphics[#1]{#2}%
+  \fi%
+}
+
 \makeatother
