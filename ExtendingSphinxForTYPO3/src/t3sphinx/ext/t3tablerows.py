@@ -114,6 +114,14 @@ def checkCombinationOfTerms(terms):
         if terms == L:
             found = True
             break
+
+    # https://forge.typo3.org/issues/59304, mb, 2014-12-09
+    # from now on we accept ALL combinations
+    if not found:
+        rowtype = 0
+        rowid = '99'
+        found = True
+
     if 0 and not found:
         f2 = file('temp.txt', 'a')
         f2.write('%s\n' % terms)
