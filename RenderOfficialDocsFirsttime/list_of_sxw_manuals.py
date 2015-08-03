@@ -1,8 +1,8 @@
 
 files = [
-    #'/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Guide/Administrators.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Guide/FrontendLocalization.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Guide/Installation.git/Documentation/_not_versioned/_genesis/manual.sxw',
+    # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Guide/Maintenance.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Guide/Security.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/CodingGuidelines.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/CoreApi.git/Documentation/_not_versioned/_genesis/manual.sxw',
@@ -12,9 +12,9 @@ files = [
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/Tca.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/Tsconfig.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/Typo3Services.git/Documentation/_not_versioned/_genesis/manual.sxw',
-      '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/Typoscript.git/Documentation/_not_versioned/_genesis/manual.sxw',
+    # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/Typoscript.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Reference/TyposcriptSyntax.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Tutorial/Editors.git/Documentation/_not_versioned/_genesis/manual.sxw',
-    # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Tutorial/GettingStarted.git/Documentation/_not_versioned/_genesis/manual.sxw',
+      '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Tutorial/GettingStarted.git/Documentation/_not_versioned/_genesis/manual.sxw',
     # '/home/mbless/HTDOCS/git.typo3.org/Documentation/TYPO3/Tutorial/Typoscript45Minutes.git/Documentation/_not_versioned/_genesis/manual.sxw',
 ]

@@ -5,7 +5,7 @@
 Convert an OpenOffice (X)HTML file to reST.
 """
 
-__version__ = '1.1.1'
+__version__ = '1.2.0'
 
 # leave your name and notes here:
 __history__ = """\
@@ -22,8 +22,11 @@ __history__ = """\
 2012-03-18  used as is for complete conversion process today
 2012-05-20  v1.1.0: Add commandline option 'tables-as'. Mark begin and end
             of tables written as definition lists
-2012-05-29  v1.1.1: "tablesas" now works
-
+2012-05-29  v1.1.1: changed ...
+2012-08-29  v1.1.2: write '.. t3-field-list-table::' instead of
+            '.. field-list-table::'
+2012-08-29  v1.1.3: add option tablesas=t3flt
+2013-05-26  v1.2.0: now with import * from constants
 """
 
 __copyright__ = """\
@@ -63,66 +66,30 @@ except ImportError:
 
 from textwrap import TextWrapper
 
+from constants import *
 
 import htmlentitydefs
 entitydefs = HTMLParser.entitydefs = {'apos':u"'"}
 for k, v in htmlentitydefs.name2codepoint.iteritems():
     entitydefs[k] = unichr(v)
 
-WHITESPACECHARS = '\t\n\x0b\x0c\r '
 
-SECTION_UNDERLINERS = list("""=-^"~'#*$`+;.,_/\%&!""")
 
-META_MAPPING = {
-    # name lower : (canonical spelling, keep in output?),
-    'content-type'   : ('Content-type'  , 0),
-    'description'    : ('Description'   , 1),
-    'generator'      : ('Generator'     , 0),
-    'author'         : ('Author'        , 1),
-    'created'        : ('Created'       , 1),
-    'changedby'      : ('Changed by'    , 1),
-    'changed'        : ('Changed'       , 1),
-    'classification' : ('Classification', 1),
-    'content-style-type' : ('Content-style-type', 0),
-    'keywords'       : ('Keywords'      , 1),
-    'author'         : ('Author'        , 1),
-    'email'          : ('Email'         , 1),
-    'language (en, de, fr, nl, dk, es, ... )' : ('Language'  , 1),
-    'resourceloaderdynamicstyles' : ('Resource_Loader_Dynamic_Styles', 0),
-    'sdfootnote'     : ('sdfootnote'    , 0),
-    'sdendnote'      : ('sdendnote'     , 0),
-}
 
-NL = '\n'
-CRLF = '\r\n'
 
-CUTTER_MARK_IMAGES = '.. ######CUTTER_MARK_IMAGES######'
 
-class Dummy(object):
-    pass
 
-SNIPPETS = Dummy()
-SNIPPETS.for_your_information = """\
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
 
-"""
-SNIPPETS.define_some_textroles = """\
-.. ==================================================
-.. DEFINE SOME TEXTROLES
-.. --------------------------------------------------
-.. role::   underline
-.. role::   typoscript(code)
-.. role::   ts(typoscript)
-   :class:  typoscript
-.. role::   php(code)
 
-"""
 
-class Dummy(object):
-    pass
+
+
+
+
+
+
+
+
 
 MAIN = Dummy()
 MAIN.options = {
@@ -304,8 +271,8 @@ class DataCollector(object):
         self.stop_th = self.stop_th_AndWrite_definition_list
         self.stop_td = self.stop_td_AndWrite_definition_list
 
-        if self.tablesas == 'flt':
-            # write tables as field-list-table directives
+        if self.tablesas == 'flt' or self.tablesas == 't3flt':
+            # write tables as t3-field-list-table directives
             self.stop_table = self.stop_table_AndWrite_field_list_table
             self.stop_tr = self.stop_tr_AndWrite_field_list_table
             self.stop_th = self.stop_th_AndWrite_field_list_table
@@ -431,7 +398,9 @@ class DataCollector(object):
                 D = dict(imgattrs)
                 del D['src']
                 recognizedByDocutils = ['alt','height','width','scale','align','target']
-                for k in ['alt','height','width','scale','target']:
+                tokeep = ['alt', 'height', 'width', 'scale', 'target']
+                tokeep = ['alt', 'scale', 'target']
+                for k in tokeep:
                     if D.has_key(k):
                         if not '%' in D[k]:
                             self.collect('   :%s: %s\n' % (k, D[k]))
@@ -835,7 +804,10 @@ class DataCollector(object):
                     except ValueError:
                         pass
         if s:
-            self.collect('.. field-list-table::\n', 'verbatim')
+            if self.tablesas == 'flt':
+                self.collect('.. field-list-table::\n', 'verbatim')
+            else:
+                self.collect('.. t3-field-list-table::\n', 'verbatim')
             self.collect(' :header-rows: %s\n' % headerrows, 'verbatim')
             if 0 and totalwidth and not totalwidth == 100:
                 self.collect(' :total-width: %s\n' % totalwidth, 'verbatim')
@@ -1020,7 +992,7 @@ class DataCollector(object):
     stop_th = stop_th_AndWrite_definition_list
     stop_td = stop_td_AndWrite_definition_list
 
-    ## # write tables as field-list-table directives
+    ## # write tables as t3-field-list-table directives
     ## stop_table = stop_table_AndWrite_field_list_table
     ## stop_tr = stop_tr_AndWrite_field_list_table
     ## stop_th = stop_th_AndWrite_field_list_table
@@ -1900,7 +1872,7 @@ def main(f1name, f2name, f3name=None, f4name=None, appendlog=0, taginfo=0, table
         result = P.datacollector.stop_document('initial')
         if 1:
             f2.write(SNIPPETS.for_your_information)
-        if 1:
+        if 0:
             f2.write(SNIPPETS.define_some_textroles)
         else:
             if P.datacollector.is_used_textrole_underline:
@@ -1942,7 +1914,7 @@ def get_argparse_args():
     parser.add_argument('--treefile', help='filename to receive a treelike structure of the input file as seen by the parser', dest='treefile', default=None)
     parser.add_argument('-a', '--append-log', help='append logfile data at then end of outfile. FLAG: 0|1. Default: 0.', dest='appendlog', default=0, type=int, choices=[0,1], metavar='FLAG')
     parser.add_argument('--taginfo', help='include a description of html tags like head, body, style, script etc. as comment into the reST file. FLAG: 0|1. Default: 0.', dest='taginfo', default=0, type=int, choices=[0,1], metavar='FLAG')
-    parser.add_argument('--tables-as', help="write tables as 'definition lists' (dl) or as 'field-list-table' (flt). Default: dl", dest='tablesas', default='dl', choices=['dl', 'flt'], metavar='dl|flt')
+    parser.add_argument('--tables-as', help="write tables as 'definition lists' (dl) or as 't3-field-list-table' (flt). Default: dl", dest='tablesas', default='dl', choices=['dl', 'flt', 't3flt'], metavar='dl|flt|t3flt')
     # parser.add_argument('-v', help='verbose - talk to stdout', dest='talk', action='store_true')
     parser.add_argument('infile')
     parser.add_argument('outfile')
