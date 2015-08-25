@@ -53,13 +53,13 @@ class MyHTMLTranslator(HTMLTranslator):
 
         # mb, 2012-05-02
         # the standardwriter doesn't handle absolute css urls and creates:
-        # [u'<link rel="stylesheet" href="../../../../render-ter-extensions/http:/docs.typo3.org/css/typo3_docutils_styles.css" type="text/css" />\n']
+        # [u'<link rel="stylesheet" href="../../../../render-ter-extensions/https:/docs.typo3.org/css/typo3_docutils_styles.css" type="text/css" />\n']
         temp = []
         for s in self.stylesheet:
             p1 = s.find('href="')
-            p2 = s.find('http:/', p1)
+            p2 = s.find('https:/', p1)
             if p1 > 0 and p2 > p1:
-                s = s[0:p1+6] + 'http://' + s[p2+6:]
+                s = s[0:p1+6] + 'https://' + s[p2+6:]
             temp.append(s)
         self.stylesheet = temp
 
@@ -145,20 +145,10 @@ class MySettingsSpec(SettingsSpec):
         'source_link': True,
         # 'output_encoding':'utf-8',
         'output_encoding_error_handler': 'xmlcharrefreplace',
-        #'stylesheet_path':'../css/styles.css',
         'stylesheet_path':None,
         'link_stylesheet':True,
-        #'stylesheet':'http://srv123.typo3.org/~mbless/css/styles.css',
     }
 settings_spec = MySettingsSpec()
-
-if 0 and 'quick and dirty hack - to be removed later!':
-    import sys
-    sys.argv = (sys.argv[:1] + [
-        '--link-stylesheet',
-        '--stylesheet=http://srv123.typo3.org/~mbless/css/styles.css',
-        ] + sys.argv[1:])
-
 
 if 0 and 'developing':
     import sys

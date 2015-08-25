@@ -203,7 +203,7 @@ class Main:
         # more settings
         self.usr_bin_python = '/usr/bin/python'
         self.usr_bin_python = 'python'
-        self.t3docutils_stylesheet_path = 'http://docs.typo3.org/css/typo3_docutils_styles.css'
+        self.t3docutils_stylesheet_path = 'https://docs.typo3.org/css/typo3_docutils_styles.css'
         self.t3rst2html_script = 't3rst2html.py'
         self.t3docutils_template_path = 'resources/t3docutils_template.txt'
 

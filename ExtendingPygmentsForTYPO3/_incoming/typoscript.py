@@ -94,7 +94,7 @@ class TypoScriptLexer(RegexLexer):
     """
     Lexer for TypoScript code.
 
-    http://docs.typo3.org/typo3cms/TyposcriptReference/
+    https://docs.typo3.org/typo3cms/TyposcriptReference/
     """
     name = 'TypoScript'
     aliases = ['typoscript']

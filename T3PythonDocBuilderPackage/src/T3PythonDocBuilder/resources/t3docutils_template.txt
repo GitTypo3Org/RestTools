@@ -2,12 +2,12 @@
 %(head)s
 %(stylesheet)s
 
-<link                        href="http://docs.typo3.org/css/typo3_docutils_styles.css"          type="text/css" rel="stylesheet" />
-<link title="Standard style" href="http://docs.typo3.org/css/typo3_docutils_styles_standard.css" type="text/css" rel="stylesheet" />
-<link title="Test style 1"   href="http://docs.typo3.org/css/typo3_docutils_styles_test_1.css"   type="text/css" rel="alternate stylesheet" />
+<link                        href="https://docs.typo3.org/css/typo3_docutils_styles.css"          type="text/css" rel="stylesheet" />
+<link title="Standard style" href="https://docs.typo3.org/css/typo3_docutils_styles_standard.css" type="text/css" rel="stylesheet" />
+<link title="Test style 1"   href="https://docs.typo3.org/css/typo3_docutils_styles_test_1.css"   type="text/css" rel="alternate stylesheet" />
 
-<script type="text/javascript" src="http://docs.typo3.org/js/styleswitcher.js"></script>
-<script type="text/javascript" src="http://docs.typo3.org/js/terdoc.js"></script>
+<script type="text/javascript" src="https://docs.typo3.org/js/styleswitcher.js"></script>
+<script type="text/javascript" src="https://docs.typo3.org/js/terdoc.js"></script>
 
 %(body_prefix)s
 
